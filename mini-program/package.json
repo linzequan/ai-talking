@@ -1,7 +1,7 @@
 {
     "name": "ai-talking",
     "version": "1.0.0",
-    "description": "对话设计师",
+    "description": "对话设计师 - 对话，创造无限可能。",
     "author": "林泽全 <lowkey61@gmail.com>",
     "private": true,
     "scripts": {
@@ -30,6 +30,7 @@
         "@dcloudio/uni-cli-i18n": "^2.0.2-4010520240507001",
         "@dcloudio/uni-h5": "^2.0.0-26520200314001",
         "@dcloudio/uni-helper-json": "*",
+        "@dcloudio/uni-i18n": "^2.0.2-4010520240507001",
         "@dcloudio/uni-mp-alipay": "^2.0.0-26520200314001",
         "@dcloudio/uni-mp-baidu": "^2.0.0-26520200314001",
         "@dcloudio/uni-mp-qq": "^2.0.0-26520200314001",
