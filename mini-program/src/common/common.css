@@ -1,0 +1,72 @@
+.layer-liuyan-box {
+    margin: 10upx auto;
+    width: 80%;
+}
+
+.layer-liuyan-box-content {
+    width: 100%;
+}
+
+.layer-liuyan-box-content-textarea {
+    width: 100%;
+    border: 1px solid #924016;
+    height: 80upx;
+    display: block;
+    /* padding: 8upx; */
+    font-size: 28upx;
+}
+
+.layer-liuyan-box-subtitle {
+    font-size: 28upx;
+    color: #924016;
+    margin-bottom: 10upx;
+}
+
+button.layer-liuyan-box-submit {
+    width: 80%;
+    margin: 30upx auto;
+    background: #924016;
+    color: #fff;
+    display: block;
+}
+
+button.layer-liuyan-box-submit:focus,
+button.layer-liuyan-box-submit:hover,
+button.layer-liuyan-box-submit:active {
+    background: #6b2f10;
+    color: #fff;
+}
+
+.layer-liuyan-box-icon-right {
+    position: fixed;
+    width: 73upx;
+    z-index: 80;
+    right: 40upx;
+    bottom: 120upx;
+}
+
+.layer-liuyan-box-icon-share,
+.layer-liuyan-box-icon-message,
+.layer-liuyan-box-icon-phone,
+.layer-liuyan-box-icon-map {
+    width: 73upx;
+    height: 73upx;
+    margin-top: 10upx;
+    margin-bottom: 10upx;
+}
+
+.layer-liuyan-box-icon-share {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    background-image: url("https://n.sinaimg.cn/gd/gdfs/wenlv/page06-icon-share.png");
+    background-size: 100% 100%;
+}
+
+.layer-liuyan-box-icon-share::after {
+    border: 0;
+}
+
+.layer-focus {
+    margin-top: -400upx;
+}
