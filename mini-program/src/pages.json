@@ -1,8 +1,18 @@
 {
     "pages": [{
-        "path": "pages/index/index",
+        "path": "pages/chat/simple-chat",
         "style": {
             "navigationBarTitleText": "对话设计师"
+        }
+    }, {
+        "path": "pages/chat/ai-chat",
+        "style": {
+            "navigationBarTitleText": "智能宝"
+        }
+    }, {
+        "path": "pages/my/index",
+        "style": {
+            "navigationBarTitleText": "个人中心"
         }
     }],
     "globalStyle": {
@@ -15,12 +25,16 @@
         }
     },
     "tabBar": {
-        "color": "#b6b6b6",
-        "selectedColor": "#c84545",
+        "color": "#707070",
+        "selectedColor": "#F54A45",
         "borderStyle": "black",
         "backgroundColor": "#ffffff",
         "list": [{
-            "pagePath": "pages/index/index"
+            "pagePath": "pages/chat/simple-chat"
+        }, {
+            "pagePath": "pages/chat/ai-chat"
+        }, {
+            "pagePath": "pages/my/index"
         }]
     }
 }

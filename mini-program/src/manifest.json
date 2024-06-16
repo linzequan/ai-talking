@@ -1,10 +1,10 @@
 {
-    "name": "寻味凤城",
-    "appid": "wenlv",
+    "name": "对话设计师",
+    "appid": "ai-taling",
     "uniStatistics": {
         "enable": false
     },
-    "description": "寻味凤城",
+    "description": "对话，创造无限可能。",
     "versionName": "1.0.0",
     "versionCode": "100",
     "transformPx": false,

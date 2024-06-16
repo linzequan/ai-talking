@@ -17,33 +17,27 @@ const store = new Vuex.Store({
         applyInfo: null,
         // 申请号
         apllyNo: null,
-        jifenTips: {
-            '1': '阅读文章，增加积分~',
-            2: '分享转发，增加积分~',
-            3: '留言成功，增加积分~',
-            4: '进入“古韵凤城”，增加积分~'
-        },
         tabBar: [{
-            "pagePath": "/pages/index/index_v2",
+            "pagePath": "/pages/chat/simple-chat",
             "iconPath": "/static/tabbar/page01-icon01.png",
             "selectedIconPath": "/static/tabbar/page01-icon01-selected.png",
-            "text": "首页",
+            "text": "聊天宝",
             "verify": true,
             "outlink": false
         }, {
-            "pagePath": "/pages/jifen/index_v2",
+            "pagePath": "/pages/chat/ai-chat",
             "iconPath": "/static/tabbar/page01-icon02.png",
             "selectedIconPath": "/static/tabbar/page01-icon02-selected.png",
-            "text": "商家优惠",
+            "text": "智能宝",
             "verify": true,
             "outlink": false
         }, {
-            "pagePath": "/pages/changyou/index",
+            "pagePath": "/pages/my/index",
             "iconPath": "/static/tabbar/page01-icon03.png",
             "selectedIconPath": "/static/tabbar/page01-icon03-selected.png",
-            "text": "商家入驻",
-            "verify": false,
-            "outlink": true
+            "text": "我的",
+            "verify": true,
+            "outlink": false
         }],
         tabBarIndex: 0,
     },

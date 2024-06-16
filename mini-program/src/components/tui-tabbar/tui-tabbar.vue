@@ -31,12 +31,12 @@ export default {
     // 字体颜色
     color: {
       type: String,
-      default: "#B2B2B2",
+      default: "#8a8a8a",
     },
     // 字体选中颜色
     selectedColor: {
       type: String,
-      default: "#222222",
+      default: "#F54A45",
     },
     // 背景颜色
     backgroundColor: {
@@ -81,12 +81,6 @@ export default {
     this.current = this.tabBarIndex;
   },
   updated() {
-    const search = uni.setStorageSync('wenlv_search') || ''
-    console.log(search)
-    uni.setStorageSync('wenlv_search', '')
-    if(search === 'Y') {
-      this.current = 2
-    }
   },
   watch: {
     tabBarIndex() {
