@@ -70,7 +70,7 @@ export default {
         },
         searchSimpleTxt() {
             uni.navigateTo({
-                url: '/pages/chat/chat-result'
+                url: '/pages/chat/search-result'
             })
         }
     },

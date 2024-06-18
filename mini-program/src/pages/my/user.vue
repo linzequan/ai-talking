@@ -79,11 +79,14 @@ export default {
 </script>
 <style scoped>
 .page {
-    width: 700rpx;
-    margin: 0 auto;
+    background: #F4F5F9;
+    padding-top: 30rpx;
+    width: 100%;
+    height: 100%;
 }
 .form-wrap {
-    margin-top: 30rpx;
+    width: 700rpx;
+    margin: 0 auto;
 }
 .form-item-wrap {
     margin-bottom: 30rpx;
@@ -100,6 +103,7 @@ export default {
     margin-top: 15rpx;
     padding: 5rpx 10rpx;
     height: 70rpx;
+    background: #fff;
 }
 .form-item-radio-group {
     margin-top: 15rpx;
@@ -122,6 +126,7 @@ export default {
     height: 70rpx;
     align-items: center;
     display: flex;
+    background: #fff;
 }
 .form-item-textarea {
     font-size: 32rpx;
@@ -132,6 +137,7 @@ export default {
     height: 300rpx;
     width: 660rpx;
     line-height: 1.5;
+    background: #fff;
 }
 .submit-btn {
     font-size: 32rpx;
