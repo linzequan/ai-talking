@@ -10,7 +10,7 @@ const store = new Vuex.Store({
     state: {
         openid: null,
         hasLogin: false,
-        domain: 'https://wxpma-stg1.kakaday.com/index.php/wenlv/',
+        domain: 'https://wxpma-stg1.kakaday.com/index.php/aitalking/',
         // 登录信息
         userLoginInfo: null,
         // 申请状态查询结果信息

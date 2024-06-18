@@ -5,21 +5,43 @@
             "navigationBarTitleText": "对话设计师"
         }
     }, {
-        "path": "pages/chat/ai-chat",
+        "path": "pages/my/contact",
         "style": {
-            "navigationBarTitleText": "智能宝"
+            "navigationBarTitleText": "联系我们",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
+        }
+    }, {
+        "path": "pages/my/user",
+        "style": {
+            "navigationBarTitleText": "个人信息",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
         }
     }, {
         "path": "pages/my/index",
         "style": {
-            "navigationBarTitleText": "个人中心"
+            "navigationBarTitleText": "个人中心",
+            "navigationStyle": "custom"
+        }
+    }, {
+        "path": "pages/chat/search-result",
+        "style": {
+            "navigationBarTitleText": "对话设计师"
+        }
+    }, {
+        "path": "pages/chat/ai-chat",
+        "style": {
+            "navigationBarTitleText": "智能宝"
         }
     }],
     "globalStyle": {
-        "navigationBarTextStyle": "black",
+        "navigationBarTextStyle": "#fff",
         "navigationBarTitleText": "对话设计师",
-        "navigationBarBackgroundColor": "#F8F8F8",
-        "backgroundColor": "#F8F8F8",
+        "navigationBarBackgroundColor": "#f54a45",
+        "backgroundColor": "#f54a45",
         "app-plus": {
             "animationType": "pop-in"
         }
