@@ -2,7 +2,7 @@
     "pages": [{
         "path": "pages/chat/simple-chat",
         "style": {
-            "navigationBarTitleText": "对话设计师"
+            "navigationBarTitleText": "对话大师"
         }
     }, {
         "path": "pages/my/contact",
@@ -29,7 +29,7 @@
     }, {
         "path": "pages/chat/search-result",
         "style": {
-            "navigationBarTitleText": "对话设计师"
+            "navigationBarTitleText": "对话大师"
         }
     }, {
         "path": "pages/chat/ai-chat",
@@ -39,7 +39,7 @@
     }],
     "globalStyle": {
         "navigationBarTextStyle": "#fff",
-        "navigationBarTitleText": "对话设计师",
+        "navigationBarTitleText": "对话大师",
         "navigationBarBackgroundColor": "#f54a45",
         "backgroundColor": "#f54a45",
         "app-plus": {
