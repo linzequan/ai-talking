@@ -127,7 +127,7 @@ export default {
 
 .main-page {
     width: 100vw;
-    /* min-height: 100vh; */
+    min-height: 100vh;
     max-height: 100vh;
     background-image: linear-gradient(to bottom, #BCE9FC, #F7FBFD 90%, #FFF);
     background-repeat: no-repeat;

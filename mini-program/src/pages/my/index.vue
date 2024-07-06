@@ -1,31 +1,52 @@
 <template>
-    <div class="page">
-        <view class="nav" :style="'background-color: rgba(245, 74, 69, ' + op + ')'">
+    <div class="main-page">
+        <view class="nav" :style="'background-color: rgba(248, 248, 248, ' + op + ')'">
             <view class="status-bar" :style="'height:' + statusBarHeight + 'px'"></view>
-            <view class="title" :style="'color: rgba(255, 255, 255,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">个人中心</view>
+            <view class="title" :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">个人中心</view>
         </view>
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
-            <div class="top-welcome">Hi，欢迎您~</div>
-            <div class="info-wrap">
-                <img src="@/static/logo.png" class="user-avatar" mode="widthFix">
-                <div class="user-info-wrap">
-                    <div class="user-nickname">小宝宝</div>
-                    <div class="vip-status">对话，创造无限可能</div>
-                </div>
+            <div class="top-wrap">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png" class="my-avatar" mode="widthFix">
+                <div class="my-nickname">Jadia</div>
+                <div class="my-vip-status">非会员</div>
             </div>
             <div class="menu-wrap">
                 <div class="menu-item-wrap" @click="gotoUser">
-                    <div class="menu-item-text">个人信息</div>
-                    <img src="@/static/arrow-left.png" class="menu-arrow-left" mode="widthFix">
-                </div>
-                <div class="menu-item-wrap" @click="gotoContact">
-                    <div class="menu-item-text">联系我们</div>
-                    <img src="@/static/arrow-left.png" class="menu-arrow-left" mode="widthFix">
+                    <div class="menu-item-left">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-personal.png" class="menu-icon">
+                        <div class="menu-text">个人信息</div>
+                    </div>
+                    <div class="menu-item-right">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
+                    </div>
                 </div>
                 <div class="menu-item-wrap">
-                    <div class="menu-item-text">立即分享</div>
-                    <img src="@/static/arrow-left.png" class="menu-arrow-left" mode="widthFix">
+                    <div class="menu-item-left">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-vip.png" class="menu-icon">
+                        <div class="menu-text">会员充值</div>
+                    </div>
+                    <div class="menu-item-right">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
+                    </div>
+                </div>
+                <div class="menu-item-wrap">
+                    <div class="menu-item-left">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-collect.png" class="menu-icon">
+                        <div class="menu-text">我的收藏</div>
+                    </div>
+                    <div class="menu-item-right">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
+                    </div>
+                </div>
+                <div class="menu-item-wrap" @click="gotoContact">
+                    <div class="menu-item-left">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-contact.png" class="menu-icon">
+                        <div class="menu-text">联系我们</div>
+                    </div>
+                    <div class="menu-item-right">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
+                    </div>
                 </div>
             </div>
             <div class="footer-tabbar-wrap">
@@ -99,79 +120,121 @@ export default {
     height: 112rpx;
     padding-bottom: env(safe-area-inset-bottom);
 }
+
 .nav {
     position: fixed;
     top: 0rpx;
     left: 0;
     right: 0;
-    background: rgb(245, 74, 69);
+    background: rgb(188, 233, 252);
+    z-index: 9999;
 }
+
 .title {
     text-align: center;
-    font-size: 28rpx;
-    font-weight: bold;
+    font-size: 32rpx;
 }
-.page {
+
+.main-page {
     width: 100vw;
-    height: 100vh;
-    background: linear-gradient(180deg, rgb(245, 74, 69) 0%, #f6f0f0 78%, rgba(240, 248, 255, 0) 100%);
+    min-height: 100vh;
+    max-height: 100vh;
+    background-image: linear-gradient(to bottom, #BCE9FC, #F7FBFD 90%, #FFF);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 
-.wrap {
-    width: 700rpx;
+.top-wrap {
+    position: relative;
+    margin-top: -68rpx;
+    background: url(https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-top-bg.png) no-repeat right;
+    background-size: 750rpx 420rpx;
+    width: 750rpx;
+    height: 420rpx;
+}
+
+.my-avatar {
+    width: 132rpx;
+    display: block;
     margin: 0 auto;
+    padding-top: 108rpx;
 }
 
-.top-welcome {
-    font-size: 36rpx;
-    color: #fff;
-    font-weight: bold;
+.my-nickname {
+    font-family: Futura, Futura;
+    font-weight: 700;
+    font-size: 40rpx;
+    color: #333333;
+    line-height: 40rpx;
+    text-align: center;
+    margin-top: 24rpx;
 }
-.info-wrap {
-    width: 700rpx;
-    margin: 25rpx auto;
-    background: #fff;
-    border-radius: 16rpx;
-    display: flex;
-    align-items: center;
-}
-.user-avatar {
-    width: 160rpx;
-    border-radius: 50%;
-}
-.user-info-wrap {
-    flex: 1;
-    margin-left: 15rpx;
-}
-.user-nickname {
-    font-size: 36rpx;
-    font-weight: bold;
-    color: #000;
-}
-.vip-status {
+
+.my-vip-status {
+    font-family: PingFangSC, PingFang SC;
     font-size: 28rpx;
-    color: #ccc;
-    margin-top: 5rpx;
+    color: #999999;
+    line-height: 28rpx;
+    text-align: center;
+    margin-top: 16rpx;
 }
+
 .menu-wrap {
-    width: 700rpx;
-    margin: 25rpx auto;
-    background: #fff;
-    border-radius: 16rpx;
+    width: 670rpx;
+    display: block;
+    margin: -20rpx auto 60rpx;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2);
+    border-radius: 24rpx;
+    border: 3rpx solid #FFFFFF;
 }
+
 .menu-item-wrap {
     display: flex;
+    justify-content: space-between;
+    padding: 40rpx 32rpx;
+    position: relative;
+}
+
+.menu-item-wrap:not(:last-child)::after {
+    content: ' ';
+    position: absolute;
+    bottom: 0;
+    left: 20px; /* 调整此值以控制边框的起始位置 */
+    width: 590rpx;
+    height: 2rpx; /* 边框厚度 */
+    background-color: #F1F1F1; /* 边框颜色 */
+}
+
+.menu-item-wrap:last-child {
+    border-bottom: none;
+}
+
+.menu-item-left {
+    display: flex;
+    justify-content: center;
     align-items: center;
-    height: 112rpx;
-    padding: 0 40rpx;
 }
-.menu-item-text {
-    font-size: 30rpx;
-    font-weight: bold;
-    color: #121736;
-    flex: 1;
+
+.menu-icon {
+    width: 48rpx;
+    height: 48rpx;
+    margin-right: 44rpx;
 }
-.menu-arrow-left {
-    width: 10rpx;
+
+.menu-text {
+    font-family: PingFang-SC, PingFang-SC;
+    font-size: 32rpx;
+    color: #0E1746;
+    line-height: 32rpx;
+}
+
+.menu-item-right {
+    display: inline-block;
+}
+
+.icon-right {
+    width: 14rpx;
+    height: 24rpx;
 }
 </style>
