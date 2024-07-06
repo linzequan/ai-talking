@@ -13,7 +13,7 @@
         },
         globalData: {
             innerAudioContext: null,
-            ver: '1.1.5'
+            ver: '1.0.0'
         },
     }
 </script>

@@ -2,7 +2,11 @@
     "pages": [{
         "path": "pages/chat/simple-chat",
         "style": {
-            "navigationBarTitleText": "对话大师"
+            "navigationBarTitleText": "对话大师",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
         }
     }, {
         "path": "pages/my/contact",
@@ -24,7 +28,10 @@
         "path": "pages/my/index",
         "style": {
             "navigationBarTitleText": "个人中心",
-            "navigationStyle": "custom"
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
         }
     }, {
         "path": "pages/chat/search-result",
@@ -38,17 +45,17 @@
         }
     }],
     "globalStyle": {
-        "navigationBarTextStyle": "#fff",
+        "navigationBarTextStyle": "black",
         "navigationBarTitleText": "对话大师",
-        "navigationBarBackgroundColor": "#f54a45",
-        "backgroundColor": "#f54a45",
+        "navigationBarBackgroundColor": "#BCE9FC",
+        "backgroundColor": "#BCE9FC",
         "app-plus": {
             "animationType": "pop-in"
         }
     },
     "tabBar": {
         "color": "#707070",
-        "selectedColor": "#F54A45",
+        "selectedColor": "#4C6EF5",
         "borderStyle": "black",
         "backgroundColor": "#ffffff",
         "list": [{

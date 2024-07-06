@@ -36,7 +36,7 @@ export default {
     // 字体选中颜色
     selectedColor: {
       type: String,
-      default: "#F54A45",
+      default: "#4C6EF5",
     },
     // 背景颜色
     backgroundColor: {
