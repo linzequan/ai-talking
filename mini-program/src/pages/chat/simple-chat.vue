@@ -160,8 +160,8 @@ export default {
                 this.isShowTabbar = true;
                 setTimeout(()=> {
                     this.showOpenScreenPage = false
-                }, 1000)
-            }, 2000)
+                }, 0)
+            }, 0)
         },
         clearSearchTxt() {
             this.searchTxt = '';
@@ -308,7 +308,8 @@ export default {
 
 .main-page {
     width: 100vw;
-    min-height: 100vh;
+    /* min-height: 100vh; */
+    max-height: 100vh;
     background-image: linear-gradient(to bottom, #BCE9FC, #F7FBFD 90%, #FFF);
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -321,7 +322,6 @@ export default {
     background-size: 750rpx 420rpx;
     width: 750rpx;
     height: 420rpx;
-    position: relative;
 }
 
 .top-wrap-title {

@@ -41,7 +41,11 @@
     }, {
         "path": "pages/chat/ai-chat",
         "style": {
-            "navigationBarTitleText": "智能宝"
+            "navigationBarTitleText": "智能宝",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
         }
     }],
     "globalStyle": {
