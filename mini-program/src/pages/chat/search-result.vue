@@ -12,7 +12,10 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
             <div class="chat-result-wrap">
-                <div class="chat-bubble-right">还有什么办法</div>
+                <div class="chat-bubble-right" v-if="resultType == 'txt'">还有什么办法</div>
+                <div class="chat-bubble-right pic" v-else>
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix">
+                </div>
                 <div class="chat-bubble-response">
                     <div class="chat-bubble-response-text">
                         甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
@@ -43,10 +46,15 @@
                 </div>
             </div>
             <div class="chat-break-wrap">再聊点新内容吧</div>
-            <div class="chat-content-wrap">
+            <div class="chat-content-wrap" v-if="resultType == 'txt'">
                 <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
                     placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
                 <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
+            </div>
+            <div class="upload-wrap" v-else>
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn">
+                <div class="upload-tip">上传聊天图片生成智能回复</div>
+                <div class="chat-content-btn">生成智能回复</div>
             </div>
         </div>
         <tui-bottom-popup :zIndex="1002" :maskZIndex="1001" :show="popupShow" @close="hiddenPopup">
@@ -69,26 +77,6 @@
                 </div>
             </div>
         </tui-bottom-popup>
-        <!-- <div class="search-wrap">
-            <div class="search-text" v-if="resultType=='txt'">我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了</div>
-            <div class="search-img" v-if="resultType=='img'">
-                <img src="@/static/chat-sample-01.png" class="chat-sample" mode="widthFix" @click="prevImg('@/static/chat-sample-01.png')">
-            </div>
-        </div>
-        <div class="response-wrap">
-            <div class="response-item-wrap">
-                <div class="response-item">
-                    <image src="@/static/logo.png" class="response-item-avatar"></image>
-                    <div class="responsse-item-text">去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起去洗澡也不叫我一起</div>
-                </div>
-                <div class="response-operation-wrap">
-                    <button size="default" type="default" class="response-item-copy-btn">
-                        <image src="@/static/copy.png" class="response-item-icon"></image>
-                        <span>复制</span>
-                    </button>
-                </div>
-            </div>
-        </div> -->
     </div>
 </template>
 
@@ -105,7 +93,7 @@ export default {
             statusBarHeight: 0,
             navigationBarHeight: 0,
             op: 0,
-            resultType: 'txt',
+            resultType: 'txt', // txt, pic
             popupShow: false
         };
     },
@@ -231,6 +219,10 @@ export default {
     margin-left: auto;
     margin-right: 12rpx;
     margin-bottom: 26rpx;
+}
+
+.chat-bubble-right.pic {
+    padding: 20rpx 30rpx;
 }
 
 .chat-bubble-right::after {
@@ -427,5 +419,51 @@ export default {
     line-height: 44rpx;
     text-align: center;
     margin-top: 20rpx;
+}
+
+.chat-bubble-pic {
+    width: 284rpx;
+}
+
+.upload-wrap {
+    width: 670rpx;
+    height: 530rpx;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
+    border-radius: 24rpx;
+    border: 3rpx solid #FFFFFF;
+    margin: 80rpx auto;
+    position: relative;
+}
+
+.ai-chat-upload-btn {
+    width: 208rpx;
+    height: 208rpx;
+    margin: 84rpx auto 0;
+    display: block;
+}
+
+.upload-tip {
+    font-family: PingFang-SC, PingFang-SC;
+    font-size: 28rpx;
+    color: #999999;
+    line-height: 40rpx;
+    text-align: center;
+    margin-top: 40rpx;
+}
+
+.chat-content-btn {
+    width: 550rpx;
+    height: 96rpx;
+    background: #435AFC;
+    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76,166,245,0.33);
+    border-radius: 78rpx;
+    font-family: PingFang-SC, PingFang-SC;
+    font-weight: bold;
+    font-size: 36rpx;
+    color: #FFFFFF;
+    text-align: center;
+    line-height: 96rpx;
+    margin: 30rpx auto 0;
 }
 </style>
