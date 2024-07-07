@@ -9,7 +9,7 @@
             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-title.png" class="top-wrap-title" mode="widthFix">
         </div>
         <div class="upload-wrap">
-            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn">
+            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
             <div class="upload-tip">上传聊天图片生成智能回复</div>
             <div class="chat-content-btn">生成智能回复</div>
         </div>
@@ -26,34 +26,24 @@
                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-demo02.png" class="ai-chat-demo-pic" mode="widthFix">
                 </div>
             </div>
-        <div class="footer-tabbar-wrap">
+        <div class="footer-tabbar-wrap" v-show="isShowTabbar">
             <tui-tabbar></tui-tabbar>
         </div>
+        <tui-actionsheet  
+            :show="showActionSheet" 
+            :item-list="itemList" 
+            @click="itemClick" 
+            @cancel="closeActionSheet">
+        </tui-actionsheet>
     </div>
-    <!-- <div class="wrap">
-        <div class="upload-wrap">
-            <div class="upload-title">
-                <div>上传聊天记录图片</div>
-                <div>智能生成对话</div>
-            </div>
-            <div class="upload-operation-wrap">
-                <image src="@/static/upload.png" class="icon-upload"></image>
-                <span class="upload-tip">点击上传/拍摄</span>
-                <span class="upload-tip-tiny">采用本地大模型生成，安全可信任</span>
-            </div>
-        </div>
-        <div class="tip-wrap">
-            <div class="tip-title">参考示例</div>
-            <div class="tip-group">
-                <image src="@/static/chat-sample-01.png" class="chat-sample"></image>
-                <image src="@/static/chat-sample-01.png" class="chat-sample"></image>
-            </div>
-        </div>
-    </div> -->
 </template>
 
 <script>
+import tuiActionsheet from '../../components/tui-actionsheet/tui-actionsheet.vue'
 export default {
+    components: {
+        tuiActionsheet
+    },
     data() {
         return {
             // 自定义头部
@@ -61,6 +51,16 @@ export default {
             statusBarHeight: 0,
             navigationBarHeight: 0,
             op: 0,
+            // 上传弹窗
+            showActionSheet: false,
+            itemList: [{
+                text: "拍摄",
+                color: "#333333"
+            }, {
+                text: "从手机相册选择",
+                color: "#333333"
+            }],
+            isShowTabbar: true
         };
     },
     onLoad(e) {
@@ -99,6 +99,22 @@ export default {
             this.navHeight = this.statusBarHeight + this.navigationBarHeight
             console.log('顶部高度：' + this.navHeight)
         },
+        //隐藏组件
+        closeActionSheet: function() {
+            this.showActionSheet = false
+            this.isShowTabbar = true
+        },
+        //调用此方法显示组件
+        openActionSheet: function(type) {
+            this.isShowTabbar = false;
+            this.showActionSheet = true;
+        },
+        itemClick: function(e) {
+            console.log(e)
+            let index = e.index;
+            this.closeActionSheet();
+            this.tui.toast(`您点击的按钮索引为：${index}`)
+        }
     },
 };
 </script>
