@@ -14,7 +14,7 @@
             <div class="chat-result-wrap">
                 <div class="chat-bubble-right" v-if="resultType == 'txt'">还有什么办法</div>
                 <div class="chat-bubble-right pic" v-else>
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
                 </div>
                 <div class="chat-bubble-response">
                     <div class="chat-bubble-response-text">
@@ -93,7 +93,7 @@ export default {
             statusBarHeight: 0,
             navigationBarHeight: 0,
             op: 0,
-            resultType: 'txt', // txt, pic
+            resultType: 'pic', // txt, pic
             popupShow: false
         };
     },
