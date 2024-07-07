@@ -30,7 +30,7 @@
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
                     </div>
                 </div>
-                <div class="menu-item-wrap">
+                <div class="menu-item-wrap" @click="gotoCollect">
                     <div class="menu-item-left">
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-collect.png" class="menu-icon">
                         <div class="menu-text">我的收藏</div>
@@ -109,6 +109,11 @@ export default {
         gotoContact() {
             uni.navigateTo({
                 url: '/pages/my/contact'
+            })
+        },
+        gotoCollect() {
+            uni.navigateTo({
+                url: '/pages/my/collect'
             })
         }
     },
