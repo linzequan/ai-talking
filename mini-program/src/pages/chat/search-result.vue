@@ -5,30 +5,38 @@
             <div class="nav-back" @click="goback">
                 <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-back.png" class="icon-back">
             </div>
-            <view class="title" :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">聊天大师</view>
+            <view class="title"
+                :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">
+                聊天大师</view>
         </view>
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
             <div class="chat-result-wrap">
                 <div class="chat-bubble-right">还有什么办法</div>
                 <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？</div>
+                    <div class="chat-bubble-response-text">
+                        甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
+                    </div>
                     <div class="chat-bubble-response-break-line"></div>
                     <div class="chat-bubble-op-wrap">
                         <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png" class="chat-bubble-op-icon">
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
+                                class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">复制</div>
                         </div>
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png" class="chat-bubble-op-icon">
+                        <div class="chat-bubble-op-item left" @click="showPopup">
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
+                                class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">转发</div>
                         </div>
                         <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png" class="chat-bubble-op-icon">
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
+                                class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">收藏</div>
                         </div>
                         <div class="chat-bubble-op-item right">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png" class="chat-bubble-op-icon">
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
+                                class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">换个答案</div>
                         </div>
                     </div>
@@ -36,10 +44,31 @@
             </div>
             <div class="chat-break-wrap">再聊点新内容吧</div>
             <div class="chat-content-wrap">
-                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
+                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
+                    placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
                 <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
             </div>
         </div>
+        <tui-bottom-popup :zIndex="1002" :maskZIndex="1001" :show="popupShow" @close="hiddenPopup">
+            <div class="layer-head-wrap">
+                <div class="layer-head-text">转发到</div>
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-close.png" class="icon-close" @click="hiddenPopup">
+            </div>
+            <div class="layer-content-wrap">
+                <div class="layer-item-wrap">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-wechat.png" class="layer-item-icon">
+                    <div class="layer-item-text">微信好友</div>
+                </div>
+                <div class="layer-item-wrap">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-moments.png" class="layer-item-icon">
+                    <div class="layer-item-text">朋友圈</div>
+                </div>
+                <div class="layer-item-wrap">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-poster.png" class="layer-item-icon">
+                    <div class="layer-item-text">生成图片</div>
+                </div>
+            </div>
+        </tui-bottom-popup>
         <!-- <div class="search-wrap">
             <div class="search-text" v-if="resultType=='txt'">我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了我要去洗澡了</div>
             <div class="search-img" v-if="resultType=='img'">
@@ -64,7 +93,12 @@
 </template>
 
 <script>
+import tuiBottomPopup from '../../components/tui-bottom-popup/tui-bottom-popup.vue'
+
 export default {
+    components: {
+        tuiBottomPopup
+    },
     data() {
         return {
             navHeight: 0,
@@ -72,6 +106,7 @@ export default {
             navigationBarHeight: 0,
             op: 0,
             resultType: 'txt',
+            popupShow: false
         };
     },
     onLoad(e) {
@@ -114,6 +149,13 @@ export default {
             wx.previewImage({
                 urls: [img]
             })
+        },
+        //调用此方法显示弹层
+        showPopup: function () {
+            this.popupShow = true
+        },
+        hiddenPopup: function () {
+            this.popupShow = false
         },
         goback() {
             uni.navigateBack({
@@ -203,8 +245,8 @@ export default {
 }
 
 .chat-bubble-response {
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76, 166, 245, 0.2);
     border-radius: 24rpx;
     border: 3rpx solid #FFFFFF;
     margin-bottom: 26rpx;
@@ -230,8 +272,10 @@ export default {
 .chat-bubble-op-wrap {
     width: 606rpx;
     display: flex;
-    justify-content: space-between; /* 分布子元素，第一个和最后一个分别靠向两端 */
-    align-items: center; /* 垂直居中对齐 */
+    justify-content: space-between;
+    /* 分布子元素，第一个和最后一个分别靠向两端 */
+    align-items: center;
+    /* 垂直居中对齐 */
     margin: 0 auto 32rpx;
 }
 
@@ -294,8 +338,8 @@ export default {
     width: 670rpx;
     height: 364rpx;
     position: relative;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76, 166, 245, 0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
     display: block;
     margin: 80rpx auto;
     border: 3rpx solid #fff;
@@ -327,7 +371,7 @@ export default {
     width: 550rpx;
     height: 96rpx;
     background: #435AFC;
-    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76,166,245,0.33);
+    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76, 166, 245, 0.33);
     border-radius: 78rpx;
     font-family: PingFang-SC, PingFang-SC;
     font-weight: bold;
@@ -338,72 +382,50 @@ export default {
     margin: 20rpx auto 60rpx;
 }
 
+.layer-head-wrap {
+    position: relative;
+}
 
-.search-wrap {
-    width: 680rpx;
-    margin: 20rpx auto 0;
-    border: 2rpx solid #f54a45;
-    border-radius: 10rpx;
-    background: #f6f0f0;
-    padding: 20rpx 10rpx;
-}
-.search-text {
-    font-size: 32rpx;
-    color: #000;
-    line-height: 1.5;
-}
-.response-wrap {
-    width: 700rpx;
+.layer-head-text {
+    font-family: PingFang-SC, PingFang-SC;
+    font-weight: bold;
+    font-size: 36rpx;
+    color: #333333;
+    line-height: 36rpx;
+    text-align: center;
     display: block;
-    margin: 40rpx auto 0;
-    padding-bottom: 80rpx;
+    margin: 42rpx auto;
 }
-.response-item-wrap {
-    margin-bottom: 40rpx;
+
+.icon-close {
+    width: 40rpx;
+    height: 40rpx;
+    position: absolute;
+    right: 48rpx;
+    top: 0;
 }
-.response-item {
+
+.layer-content-wrap {
     display: flex;
+    margin: 60rpx 92rpx;
 }
-.response-item-avatar {
+
+.layer-item-wrap {
+    text-align: center;
+    flex: 1;
+}
+
+.layer-item-icon {
     width: 100rpx;
     height: 100rpx;
 }
-.responsse-item-text {
-    flex: 1;
+
+.layer-item-text {
+    font-family: PingFang-SC, PingFang-SC;
     font-size: 32rpx;
-    color: #000;
-    border: 2rpx solid #f54a45;
-    background: #f6f0f0;
-    border-radius: 10rpx;
-    padding: 15rpx;
-    line-height: 1.5;
-}
-.response-operation-wrap {
-    text-align: right;
-    margin-top: 30rpx;
-}
-.response-item-copy-btn {
-    background: #fff;   
-    width: 180rpx;
-    display: inline-flex;
-    height: 80rpx;
-    line-height: 80rpx;
-    border-radius: 80rpx;
-    border: 2rpx solid #cdcdcd;
-    align-items: center;
-}
-.response-item-copy-btn .response-item-icon {
-    width: 48rpx;
-    height: 48rpx;
-}
-.response-item-copy-btn span {
-    font-size: 28rpx;
-    color: #cdcdcd;
-    margin-left: 5rpx;
-}
-.chat-sample {
-    width: 240rpx;
-    margin: 0 auto;
-    display: block;
+    color: #333333;
+    line-height: 44rpx;
+    text-align: center;
+    margin-top: 20rpx;
 }
 </style>
