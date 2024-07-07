@@ -20,6 +20,7 @@
         "path": "pages/my/user",
         "style": {
             "navigationBarTitleText": "个人信息",
+            "navigationStyle": "custom",
             "navigationBarTextStyle": "black",
             "navigationBarBackgroundColor": "#fff",
             "backgroundColor": "#F8F8F8"
