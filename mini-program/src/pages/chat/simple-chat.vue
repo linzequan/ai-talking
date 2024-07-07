@@ -16,8 +16,8 @@
                 <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/simple-chat-title.png" class="top-wrap-title" mode="widthFix">
             </div>
             <div class="chat-content-wrap">
-                <textarea class="chat-content-textarea" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
-                <div class="chat-content-btn">一键生成回复</div>
+                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
+                <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
             </div>
             <div class="guess-wrap">
                 <div class="guess-head-wrap">
@@ -284,7 +284,7 @@ export default {
 
 .title {
     text-align: center;
-    font-size: 32rpx;
+    font-size: 28rpx;
 }
 
 .open-screen-page {
@@ -354,7 +354,7 @@ export default {
     margin: 36rpx auto 0;
     display: block;
     width: 594rpx;
-    height: 310rpx;
+    height: 325rpx;
     border: none;
     outline: none;
     box-shadow: none;

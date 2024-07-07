@@ -36,7 +36,11 @@
     }, {
         "path": "pages/chat/search-result",
         "style": {
-            "navigationBarTitleText": "对话大师"
+            "navigationBarTitleText": "对话大师",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
         }
     }, {
         "path": "pages/chat/ai-chat",

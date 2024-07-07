@@ -132,7 +132,7 @@ export default {
 
 .title {
     text-align: center;
-    font-size: 32rpx;
+    font-size: 28rpx;
 }
 
 .main-page {
