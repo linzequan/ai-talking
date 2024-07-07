@@ -11,7 +11,7 @@
         <div class="upload-wrap">
             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
             <div class="upload-tip">上传聊天图片生成智能回复</div>
-            <div class="chat-content-btn">生成智能回复</div>
+            <div class="chat-content-btn" @click="searchAiResult">生成智能回复</div>
         </div>
         <div class="upload-demo-wrap">
                 <div class="upload-demo-head-wrap">
@@ -84,7 +84,6 @@ export default {
             // 如果滚动距离大于导航高度，则透明度值为1（不透明）
             this.op = 1
         }
-        console.log(top, height, this.op)
     },
     onShareAppMessage() {
     },
@@ -100,20 +99,25 @@ export default {
             console.log('顶部高度：' + this.navHeight)
         },
         //隐藏组件
-        closeActionSheet: function() {
+        closeActionSheet() {
             this.showActionSheet = false
             this.isShowTabbar = true
         },
         //调用此方法显示组件
-        openActionSheet: function(type) {
+        openActionSheet(type) {
             this.isShowTabbar = false;
             this.showActionSheet = true;
         },
-        itemClick: function(e) {
+        itemClick(e) {
             console.log(e)
             let index = e.index;
             this.closeActionSheet();
             this.tui.toast(`您点击的按钮索引为：${index}`)
+        },
+        searchAiResult() {
+            uni.navigateTo({
+                url: '/pages/chat/search-result?type=pic'
+            })
         }
     },
 };

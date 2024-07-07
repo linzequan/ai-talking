@@ -89,7 +89,6 @@ export default {
             // 如果滚动距离大于导航高度，则透明度值为1（不透明）
             this.op = 1
         }
-        console.log(top, height, this.op)
     },
     methods: {
         calcTopHeight() {

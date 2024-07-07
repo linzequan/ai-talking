@@ -52,7 +52,7 @@
                 <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
             </div>
             <div class="upload-wrap" v-else>
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
                 <div class="upload-tip">上传聊天图片生成智能回复</div>
                 <div class="chat-content-btn">生成智能回复</div>
             </div>
@@ -77,15 +77,24 @@
                 </div>
             </div>
         </tui-bottom-popup>
+
+        <tui-actionsheet  
+            :show="showActionSheet" 
+            :item-list="itemList" 
+            @click="itemClick" 
+            @cancel="closeActionSheet">
+        </tui-actionsheet>
     </div>
 </template>
 
 <script>
 import tuiBottomPopup from '../../components/tui-bottom-popup/tui-bottom-popup.vue'
+import tuiActionsheet from '../../components/tui-actionsheet/tui-actionsheet.vue'
 
 export default {
     components: {
-        tuiBottomPopup
+        tuiBottomPopup,
+        tuiActionsheet
     },
     data() {
         return {
@@ -94,11 +103,21 @@ export default {
             navigationBarHeight: 0,
             op: 0,
             resultType: 'pic', // txt, pic
-            popupShow: false
+            popupShow: false,
+            // 上传弹窗
+            showActionSheet: false,
+            itemList: [{
+                text: "拍摄",
+                color: "#333333"
+            }, {
+                text: "从手机相册选择",
+                color: "#333333"
+            }],
         };
     },
     onLoad(e) {
         this.calcTopHeight()
+        this.resultType = e.type || 'txt'
     },
     onShareAppMessage() {
     },
@@ -120,7 +139,6 @@ export default {
             // 如果滚动距离大于导航高度，则透明度值为1（不透明）
             this.op = 1
         }
-        console.log(top, height, this.op)
     },
     methods: {
         calcTopHeight() {
@@ -139,11 +157,25 @@ export default {
             })
         },
         //调用此方法显示弹层
-        showPopup: function () {
+        showPopup() {
             this.popupShow = true
         },
-        hiddenPopup: function () {
+        hiddenPopup() {
             this.popupShow = false
+        },
+        //隐藏组件
+        closeActionSheet() {
+            this.showActionSheet = false
+        },
+        //调用此方法显示组件
+        openActionSheet(type) {
+            this.showActionSheet = true;
+        },
+        itemClick(e) {
+            console.log(e)
+            let index = e.index;
+            this.closeActionSheet();
+            this.tui.toast(`您点击的按钮索引为：${index}`)
         },
         goback() {
             uni.navigateBack({
