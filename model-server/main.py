@@ -16,22 +16,24 @@ def simple_chat():
             "message": "入参非法"
         })
     response = call_with_messages(txt)
-    if response.status_code == HTTPStatus.OK:
-        return jsonify({
-            "status": 0,
-            "message": "查询成功",
-            "data": {
-                "message": response.output.choices[0]['message']['content']
-            }
-        })
-    else:
-        return jsonify({
-            "status": -1,
-            "message": ('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
-                response.request_id, response.status_code,
-                response.code, response.message
-            ))
-        })
+    print(response)
+    return response
+    # if response.status_code == HTTPStatus.OK:
+    #     return jsonify({
+    #         "status": 0,
+    #         "message": "查询成功",
+    #         "data": {
+    #             "message": response.output.choices[0]['message']['content']
+    #         }
+    #     })
+    # else:
+    #     return jsonify({
+    #         "status": -1,
+    #         "message": ('Request id: %s, Status code: %s, error code: %s, error message: %s' % (
+    #             response.request_id, response.status_code,
+    #             response.code, response.message
+    #         ))
+    #     })
 
 @app.route("/chat/ai", methods=['POST'])
 def ai_chat():

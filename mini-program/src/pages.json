@@ -9,6 +9,15 @@
             "backgroundColor": "#F8F8F8"
         }
     }, {
+        "path": "pages/demo/h5",
+        "style": {
+            "navigationBarTitleText": "对话大师",
+            "navigationStyle": "custom",
+            "navigationBarTextStyle": "black",
+            "navigationBarBackgroundColor": "#fff",
+            "backgroundColor": "#F8F8F8"
+        }
+    }, {
         "path": "pages/my/collect",
         "style": {
             "navigationBarTitleText": "我的收藏",

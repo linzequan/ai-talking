@@ -12,16 +12,16 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
             <div class="chat-result-wrap">
-                <div class="chat-bubble-right" v-if="resultType == 'txt'">还有什么办法</div>
+                <div class="chat-bubble-right" v-if="resultType == 'txt'">{{ searchTxt }}</div>
                 <div class="chat-bubble-right pic" v-else>
                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
                 </div>
                 <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">
-                        甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
+                    <div class="chat-bubble-response-text">{{ responseText }}
+                        <!-- 甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？ -->
                     </div>
-                    <div class="chat-bubble-response-break-line"></div>
-                    <div class="chat-bubble-op-wrap">
+                    <div class="chat-bubble-response-break-line" v-if="responseText"></div>
+                    <div class="chat-bubble-op-wrap" v-if="responseText">
                         <div class="chat-bubble-op-item left">
                             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
                                 class="chat-bubble-op-icon">
@@ -102,7 +102,7 @@ export default {
             statusBarHeight: 0,
             navigationBarHeight: 0,
             op: 0,
-            resultType: 'pic', // txt, pic
+            resultType: 'txt', // txt, pic
             popupShow: false,
             // 上传弹窗
             showActionSheet: false,
@@ -113,11 +113,28 @@ export default {
                 text: "从手机相册选择",
                 color: "#333333"
             }],
+            requestTask: undefined,
+            searchTxt: '',
+            responseText: '',
         };
     },
     onLoad(e) {
         this.calcTopHeight()
         this.resultType = e.type || 'txt'
+        if(this.resultType == 'txt') {
+            // 搜索文本
+            this.searchTxt = uni.getStorageSync('simple_chat_text', '')
+            if(this.searchTxt == '') {
+                uni.setStorageSync('simple_chat_text', '');
+                uni.showToast({
+                    title: "参数异常~",
+                    icon: "none",
+                });
+                this.goback()
+                return
+            }
+            this.handleSearchTxt(this.searchTxt)
+        }
     },
     onShareAppMessage() {
     },
@@ -181,6 +198,68 @@ export default {
             uni.navigateBack({
                 delta: 1
             });
+        },
+        // 搜索文本
+        handleSearchTxt(txt) {
+            this.requestTask = wx.request({
+                // url: 'http://dev.wxpma.com/index.php/aitalking/post?actionxm=get_simple_chat',
+                url: this.$store.state.domain + 'post?actionxm=get_simple_chat',
+                data: {
+                    txt: txt
+                },
+                header: {'Content-Type': 'application/json'},
+                enableChunked: true,
+                responseType: 'text',
+                method: 'GET',
+                timeout: 300e3,
+                success: res => {
+                    console.log('request=> ', res)
+                },
+                fail: () => {
+                }
+            });
+            this.requestTask.onHeadersReceived(res => {
+            })
+            this.requestTask.onChunkReceived(res => this.handleChunk(res))
+        },
+        parseSSEData(sseData) {
+            const lines = sseData.split('\n');
+            let data = '';
+            for (let line of lines) {
+                if (line.startsWith('data:')) {
+                    // 移除'data:'前缀并合并数据
+                    data += line.substring(5);
+                }
+            }
+            try {
+                // 尝试将数据解析为JSON
+                return data
+                const jsonData = JSON.parse(data);
+                return jsonData;
+            } catch (e) {
+                console.error('Error parsing SSE data:', e);
+                return null;
+            }
+        },
+        handleChunk(res) {
+            console.log('trigger handleChunk')
+            const arrayBuffer = res.data;
+            const uint8Array = new Uint8Array(arrayBuffer);
+            let data = uni.arrayBufferToBase64(uint8Array)
+            data = new Buffer(data, 'base64')
+            data = data.toString('utf8')
+            console.log(data)
+            const lines = data.split("\n\n")
+            lines.forEach(line => {
+                if (!line.trim()) {
+                    return
+                }
+                this.responseText += line.trim()
+                // console.log(line.trim())
+                // const data = this.parseSSEData(line.trim());
+                // console.log(data)
+                // this.responseText += data.output.choices[0]['message']['content']
+            })
         }
     },
 };
@@ -277,6 +356,8 @@ export default {
 }
 
 .chat-bubble-response-text {
+    min-width: 604rpx;
+    min-height: 30rpx;
     font-family: PingFang-SC, PingFang-SC;
     font-size: 32rpx;
     color: #333333;
@@ -284,6 +365,7 @@ export default {
     margin: 28rpx 32rpx;
     text-align: left;
     display: block;
+    text-align: justify;
 }
 
 .chat-bubble-response-break-line {

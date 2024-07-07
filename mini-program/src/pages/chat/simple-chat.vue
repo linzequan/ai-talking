@@ -16,7 +16,7 @@
                 <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/simple-chat-title.png" class="top-wrap-title" mode="widthFix">
             </div>
             <div class="chat-content-wrap">
-                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
+                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;" v-model="searchTxt"></textarea>
                 <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
             </div>
             <div class="guess-wrap">
@@ -24,52 +24,19 @@
                     <div class="guess-head-left">猜你想搜</div>
                     <div class="guess-head-right">
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-change.png" class="icon-change">
-                        <div class="guess-change-text">换一换</div>
+                        <div class="guess-change-text" @click="getRecommendList">换一换</div>
                     </div>
                 </div>
                 <div class="guess-item-group">
-                    <div class="guess-item-wrap">我洗澡去了</div>
+                    <template v-for="item in recommendList">
+                        <div class="guess-item-wrap" :key="item.id" @click="checkRecommend(item.label)">{{ item.label }}</div>
+                    </template>
+                    <!-- <div class="guess-item-wrap">我洗澡去了</div>
                     <div class="guess-item-wrap">明天再说吧</div>
                     <div class="guess-item-wrap">没兴趣</div>
                     <div class="guess-item-wrap">再说吧</div>
                     <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
-                    <div class="guess-item-wrap">我洗澡去了</div>
-                    <div class="guess-item-wrap">明天再说吧</div>
-                    <div class="guess-item-wrap">没兴趣</div>
-                    <div class="guess-item-wrap">再说吧</div>
-                    <div class="guess-item-wrap">你要这样想我也没办法</div>
-                    <div class="guess-item-wrap">我错了还不行吗</div>
+                    <div class="guess-item-wrap">我错了还不行吗</div> -->
                 </div>
             </div>
             <!-- 底部tabbar -->
@@ -104,10 +71,6 @@ export default {
         ...mapState({
             hasLogin: (state) => state.hasLogin
         }),
-        showClearIcon() {
-            if (this.searchTxt == '') return false
-            return true
-        },
         fadeOutScreenPageCls() {
             return this.beginFadeOutScreenPage ?  'open-screen-page animated fadeOut' : 'open-screen-page'
         }
@@ -162,15 +125,15 @@ export default {
                 }, 0)
             }, 0)
         },
-        clearSearchTxt() {
-            this.searchTxt = '';
-        },
-        searchInput() {
-            console.log('input', this.searchTxt == '')
-            if (this.searchTxt == '') return this.showClearIcon = false
-            return this.showClearIcon = true
-        },
         searchSimpleTxt() {
+            if(this.searchTxt == '') {
+                return uni.showToast({
+                    title: "对方聊天内容为空~",
+                    icon: "none",
+                });
+            }
+            // 将文案存入缓存
+            uni.setStorageSync('simple_chat_text', this.searchTxt);
             uni.navigateTo({
                 url: '/pages/chat/search-result?type=txt'
             })
@@ -189,40 +152,6 @@ export default {
                         icon: "none",
                     });
                     return;
-                }
-            })
-        },
-        getHistoryList() {
-            this.$fetch({
-                url: this.$store.state.domain + 'get?actionxm=get_simple_chat_txt_list',
-                showLoading: false
-            }).then(res => {
-                if (res.status == 0) {
-                    this.historyList = res.data
-                } else {
-                    uni.showToast({
-                        title: "获取数据异常~",
-                        icon: "none",
-                    });
-                    return;
-                }
-            })
-        },
-        deleteHistory() {
-            this.$fetch({
-                url: this.$store.state.domain + 'get?actionxm=delete_simple_chat_txt_list',
-                showLoading: false
-            }).then(res => {
-                if (res.status == 0) {
-                    return uni.showToast({
-                        title: '清除成功~',
-                        icon: 'none'
-                    });
-                } else {
-                    uni.showToast({
-                        title: "获取数据异常~",
-                        icon: "none",
-                    });
                 }
             })
         },

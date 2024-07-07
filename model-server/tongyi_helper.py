@@ -45,7 +45,8 @@ def call_with_messages(content):
                                seed=random.randint(1, 10000),
                                # 将输出设置为"message"格式
                                result_format='message',
-                               stream=False)
+                               stream=True,
+                               incremental_output=True)
     return response
 
 
