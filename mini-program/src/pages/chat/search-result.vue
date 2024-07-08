@@ -203,7 +203,7 @@ export default {
         handleSearchTxt(txt) {
             this.requestTask = wx.request({
                 // url: 'http://dev.wxpma.com/index.php/aitalking/post?actionxm=get_simple_chat',
-                url: this.$store.state.domain + 'post?actionxm=get_simple_chat',
+                url: this.$store.state.domain + 'get_simple_chat',
                 data: {
                     txt: txt
                 },
