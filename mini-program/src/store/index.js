@@ -167,6 +167,7 @@ const store = new Vuex.Store({
                             commit('SETOPENID', data['openid'])
                             if (data.hasLogin) {
                                 commit('SETLOGIN', true)
+                                commit('userLoginInfo', data['userinfo'])
                             }
                             return resolve(data['openid'])
                         })

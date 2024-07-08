@@ -35,7 +35,8 @@
                 </div>
                 <div class="guess-item-group">
                     <template v-for="item in recommendList">
-                        <div class="guess-item-wrap" :key="item.id" @click="checkRecommend(item.label)">{{ item.label }}</div>
+                        <div class="guess-item-wrap" v-if="hasLogin" :key="item.id" @click="checkRecommend(item.label)">{{ item.label }}</div>
+                        <div class="guess-item-wrap" v-else :key="item.id" @click="showLoginDialog">{{ item.label }}</div>
                     </template>
                     <!-- <div class="guess-item-wrap">我洗澡去了</div>
                     <div class="guess-item-wrap">明天再说吧</div>
@@ -82,7 +83,7 @@ export default {
         canSwitch() {
             let flag = false;
             if(this.hasLogin) flag = true;
-            console.log('canSwitch=> ', this.hasLogin, flag)
+            // console.log('canSwitch=> ', this.hasLogin, flag)
             return flag
         },
         fadeOutScreenPageCls() {
@@ -154,6 +155,7 @@ export default {
             uni.navigateTo({
                 url: '/pages/chat/search-result?type=txt'
             })
+            this.searchTxt = ''
         },
         getRecommendList() {
             this.$fetch({

@@ -7,8 +7,9 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
             <div class="top-wrap">
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png" class="my-avatar" mode="widthFix">
-                <div class="my-nickname">Jadia</div>
+                <!-- <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png" class="my-avatar" mode="widthFix"> -->
+                <img :src="userinfo.wx_avatarUrl" class="my-avatar">
+                <div class="my-nickname">{{ userinfo.wx_nickname }}</div>
                 <div class="my-vip-status">非会员</div>
             </div>
             <div class="menu-wrap">
@@ -57,17 +58,32 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
     data() {
         return {
             navHeight: 0,
             statusBarHeight: 0,
             navigationBarHeight: 0,
-            op: 0
+            op: 0,
+            userinfo: {
+                wx_avatarUrl: 'https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png',
+                wx_nickname: 'Jadia',
+                vip_status: 'N'
+            }
         };
+    },
+    computed: {
+        ...mapState({
+            hasLogin: (state) => state.hasLogin,
+            tabBarIndex: (state) => state.tabBarIndex,
+            userLoginInfo: (state) => state.userLoginInfo
+        }),
     },
     onLoad(e) {
         this.calcTopHeight()
+        this.userinfo.wx_avatarUrl = this.userLoginInfo['wx_avatarUrl']
+        this.userinfo.wx_nickname = this.userLoginInfo['wx_nickname']
     },
     onShareAppMessage() {
     },
@@ -154,14 +170,16 @@ export default {
     background: url(https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-top-bg.png) no-repeat right;
     background-size: 750rpx 420rpx;
     width: 750rpx;
-    height: 420rpx;
+    height: 302rpx;
+    padding-top: 108rpx;
 }
 
 .my-avatar {
     width: 132rpx;
+    height: 132rpx;
     display: block;
     margin: 0 auto;
-    padding-top: 108rpx;
+    border-radius: 50%;
 }
 
 .my-nickname {
