@@ -116,9 +116,10 @@ export default {
             requestTask: undefined,
             searchTxt: '',
             responseText: '',
+            chatLog: []
         };
     },
-    onLoad(e) {
+    async onLoad(e) {
         this.calcTopHeight()
         this.resultType = e.type || 'txt'
         if(this.resultType == 'txt') {
@@ -133,7 +134,9 @@ export default {
                 this.goback()
                 return
             }
-            this.handleSearchTxt(this.searchTxt)
+            // 查询历史聊天记录
+            await this.getChatLog(this.resultType)
+            await this.handleSearchTxt(this.searchTxt)
         }
     },
     onShareAppMessage() {
@@ -203,7 +206,6 @@ export default {
         handleSearchTxt(txt) {
             this.requestTask = wx.request({
                 // url: 'http://dev.wxpma.com/index.php/aitalking/get_simple_chat',
-                // url: 'http://dev.wxpma.com/index.php/aitalking/post?actionxm=test',
                 url: this.$store.state.domain + 'get_simple_chat',
                 data: {
                     txt: txt
@@ -214,7 +216,12 @@ export default {
                 method: 'GET',
                 timeout: 300e3,
                 success: res => {
-                    console.log('handleSearchTxt finish')
+                    console.log('handleSearchTxt finish', res)
+                    console.log('保存聊天记录')
+                    this.saveChatLog('txt', JSON.stringify({
+                        response: this.responseText,
+                        txt: this.searchTxt
+                    }))
                 },
                 fail: (err) => {
                     console.error('handleSearchTxt err: ', err)
@@ -224,25 +231,7 @@ export default {
             })
             this.requestTask.onChunkReceived(res => this.handleChunk(res))
         },
-        parseSSEData(sseData) {
-            const lines = sseData.split('\n');
-            let data = '';
-            for (let line of lines) {
-                if (line.startsWith('data:')) {
-                    // 移除'data:'前缀并合并数据
-                    data += line.substring(5);
-                }
-            }
-            try {
-                // 尝试将数据解析为JSON
-                return data
-                const jsonData = JSON.parse(data);
-                return jsonData;
-            } catch (e) {
-                console.error('Error parsing SSE data:', e);
-                return null;
-            }
-        },
+        // 流式输出处理文本
         handleChunk(res) {
             const arrayBuffer = res.data;
             const uint8Array = new Uint8Array(arrayBuffer);
@@ -254,13 +243,35 @@ export default {
                 if (!line.trim()) {
                     return
                 }
-                console.log(line.trim())
                 this.responseText += line.trim()
-                // console.log(line.trim())
-                // const data = this.parseSSEData(line.trim());
-                // console.log(data)
-                // this.responseText += data.output.choices[0]['message']['content']
             })
+        },
+        // 保存聊天记录
+        saveChatLog(type, params) {
+            this.$fetch({
+                url: this.$store.state.domain + 'post?actionxm=save_chat_log',
+                data: {
+                    type: type,
+                    params: params
+                },
+                method: 'post',
+                showLoading: false,
+            }).then((res) => {
+                console.log(res)
+            });
+        },
+        // 获取聊天记录
+        getChatLog(type) {
+            this.$fetch({
+                url: this.$store.state.domain + 'get?actionxm=get_chat_log_list',
+                data: {
+                    type: type
+                },
+                method: 'post',
+                showLoading: false,
+            }).then((res) => {
+                console.log(res)
+            });
         }
     },
 };

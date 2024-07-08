@@ -17,7 +17,13 @@
             </div>
             <div class="chat-content-wrap">
                 <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;" v-model="searchTxt"></textarea>
-                <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
+                <div v-if="hasLogin">
+                    <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
+                </div>
+                <div v-else>
+                    <div class="chat-content-btn" @click="showLoginDialog">一键生成回复</div>
+                    <!-- <div class="chat-content-btn" @click="getUserInfo('searchSimpleTxt')">一键生成回复</div> -->
+                </div>
             </div>
             <div class="guess-wrap">
                 <div class="guess-head-wrap">
@@ -40,8 +46,9 @@
                 </div>
             </div>
             <!-- 底部tabbar -->
-            <div class="footer-tabbar-wrap" v-show="isShowTabbar">
-                <tui-tabbar></tui-tabbar>
+            <div class="footer-tabbar-wrap">
+                <!-- <tui-tabbar :canSwitch='canSwitch' @beforeSwitchFn='checkStatus'></tui-tabbar> -->
+                <tui-tabbar :canSwitch='canSwitch' @beforeSwitchFn='showLoginDialog'></tui-tabbar>
             </div>
         </div>
     </div>
@@ -69,11 +76,24 @@ export default {
     },
     computed: {
         ...mapState({
-            hasLogin: (state) => state.hasLogin
+            hasLogin: (state) => state.hasLogin,
+            tabBarIndex: (state) => state.tabBarIndex
         }),
+        canSwitch() {
+            let flag = false;
+            if(this.hasLogin) flag = true;
+            console.log('canSwitch=> ', this.hasLogin, flag)
+            return flag
+        },
         fadeOutScreenPageCls() {
             return this.beginFadeOutScreenPage ?  'open-screen-page animated fadeOut' : 'open-screen-page'
         }
+    },
+    onShareAppMessage() {
+        return {
+            title: "对话大师",
+            path: "/pages/chat/simple-chat",
+        };
     },
     onLoad(e) {
         this.calcTopHeight()
@@ -82,9 +102,6 @@ export default {
         }
         this.fadeOutOpenScreenPage();
         this.getRecommendList();
-        if(this.hasLogin) {
-            this.getHistoryList();
-        }
     },
     onPageScroll(res) {
         // res.scrollTop 为页面滚动距离
@@ -128,7 +145,7 @@ export default {
         searchSimpleTxt() {
             if(this.searchTxt == '') {
                 return uni.showToast({
-                    title: "对方聊天内容为空~",
+                    title: "聊天内容为空~",
                     icon: "none",
                 });
             }
@@ -160,7 +177,50 @@ export default {
             this.searchTxt = label
             this.searchSimpleTxt()
         },
-        getUserInfo(elem) {
+        // 显示登录弹窗
+        showLoginDialog() {
+            const self = this
+            uni.showModal({
+                content: '请先登录，开启高情商对话之旅~',
+                success(res) {
+                    if (res.confirm) {
+                        uni.showLoading()
+                        // 进行微信登录
+                        if (!self.canIUseGetUserProfile) {
+                            uni.showModal({
+                                title: '温馨提示',
+                                content: "微信版本过低，请升级后使用~",
+                                showCancel: false
+                            })
+                        }
+                        uni.getUserProfile({
+                            desc: '对话大师',
+                            success: async (result) => {
+                                console.log('使用新api获取用户信息=> ', result);
+                                if (result.errMsg !== "getUserProfile:ok") {
+                                    uni.showModal({
+                                        title: "温馨提示",
+                                        content: "请同意微信授权，开启高情商对话之旅",
+                                        showCancel: false,
+                                    });
+                                    return;
+                                }
+                                await self.$store.dispatch('GETOPENID');
+                                await self.$store.commit("LOGIN", result.userInfo);
+                                uni.hideLoading()
+                                uni.showToast({
+                                    title: "登录成功~",
+                                    icon: "none",
+                                });
+                            }
+                        })
+                    } else if (res.cancel) {
+                        console.log('用户点击取消');
+                    }
+                }
+            })
+        },
+        async getUserInfo(elem) {
             if (!this.canIUseGetUserProfile) {
                 uni.showModal({
                     title: '温馨提示',
@@ -170,18 +230,18 @@ export default {
             }
             uni.getUserProfile({
                 desc: '对话大师',
-                success: (result) => {
+                success: async (result) => {
                     console.log('使用新api获取用户信息=> ', result);
                     if (result.errMsg !== "getUserProfile:ok") {
                         uni.showModal({
                             title: "温馨提示",
-                            content: "请同意微信授权，才能获取积分哟！",
+                            content: "请同意微信授权，开启高情商对话之旅",
                             showCancel: false,
                         });
                         return;
                     }
-                    this.$store.commit("LOGIN", result.userInfo);
-                    this.$store.dispatch('GETOPENID');
+                    await this.$store.dispatch('GETOPENID');
+                    await this.$store.commit("LOGIN", result.userInfo);
                     switch (elem) {
                         case 'searchSimpleTxt':
                             this.searchSimpleTxt();
@@ -191,6 +251,30 @@ export default {
                     }
                 }
             })
+        },
+        // 检查登录以及认证状态，显示对应弹窗提示
+        async checkStatus() {
+            console.log('点击tabbar', this.tabBarIndex)
+            if(!this.hasLogin) {
+                uni.getUserProfile({
+                desc: '对话大师',
+                success: async (result) => {
+                    console.log('使用新api获取用户信息=> ', result);
+                    if (result.errMsg !== "getUserProfile:ok") {
+                        uni.showModal({
+                            title: "温馨提示",
+                            content: "请同意微信授权，开启高情商对话之旅",
+                            showCancel: false,
+                        });
+                        return;
+                    }
+                    await this.$store.dispatch('GETOPENID');
+                    await this.$store.commit("LOGIN", result.userInfo);
+                }
+                });
+                return false;
+            }
+            return true;
         },
     },
 };

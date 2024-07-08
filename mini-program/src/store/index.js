@@ -42,17 +42,21 @@ const store = new Vuex.Store({
         tabBarIndex: 0,
     },
     mutations: {
-        'LOGIN': (state, userInfo) => {
-            console.log(userInfo)
-            state.userLoginInfo = userInfo;
-            state.hasLogin = true;
-            fetch({
-                url: state.domain + 'post?actionxm=save_userinfo',
-                method: 'POST',
-                data: {
-                    openid: state.openid,
-                    userinfo: JSON.stringify(userInfo)
-                }
+        'LOGIN': async (state, userInfo) => {
+            return await new Promise((resolve, reject) => {
+                console.log(userInfo)
+                state.userLoginInfo = userInfo;
+                state.hasLogin = true;
+                fetch({
+                    url: state.domain + 'post?actionxm=save_userinfo',
+                    method: 'POST',
+                    data: {
+                        openid: state.openid,
+                        userinfo: JSON.stringify(userInfo)
+                    }
+                }).then(() => {
+                    return resolve()
+                })
             })
         },
         'SETLOGIN': (state) => {
@@ -123,10 +127,11 @@ const store = new Vuex.Store({
                                 } = res
                                 commit('SETOPENID', data);
                                 if (uni.getUserProfile) {
-                                    return uni.getUserProfile()
+                                    uni.getUserProfile()
                                 } else {
-                                    return uni.getUserInfo()
+                                    uni.getUserInfo()
                                 }
+                                return resolve(data)
                             }).then((res) => {
                                 // if (res[1]) {
                                 //     const userInfo = res[1].userInfo
@@ -163,6 +168,7 @@ const store = new Vuex.Store({
                             if (data.hasLogin) {
                                 commit('SETLOGIN', true)
                             }
+                            return resolve(data['openid'])
                         })
                     }
                 })
