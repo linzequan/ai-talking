@@ -3,20 +3,27 @@
         <!-- 欢迎页 -->
         <div :class="fadeOutScreenPageCls" v-if="showOpenScreenPage">
             <!-- <image src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/open-screen-page-logo.png" class="open-screen-page-logo animated pulse infinite" style="animation-duration: 0.5s; animation-delay: 0.5s;"></image> -->
-            <image src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/open-screen-page-logo.png" class="open-screen-page-logo animated jackInTheBox" style="animation-duration: 1s; animation-delay: .5s;"></image>
+            <image src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/open-screen-page-logo.png"
+                class="open-screen-page-logo animated jackInTheBox"
+                style="animation-duration: 1s; animation-delay: .5s;"></image>
         </div>
         <!-- 首页内容 -->
         <div class="main-page" v-show="beginFadeOutScreenPage">
             <view class="nav" :style="'background-color: rgba(248, 248, 248, ' + op + ')'">
                 <view class="status-bar" :style="'height:' + statusBarHeight + 'px'"></view>
-                <view class="title" :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">聊天大师</view>
+                <view class="title"
+                    :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">
+                    聊天大师</view>
             </view>
             <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
             <div class="top-wrap">
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/simple-chat-title.png" class="top-wrap-title" mode="widthFix">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/simple-chat-title.png"
+                    class="top-wrap-title" mode="widthFix">
             </div>
             <div class="chat-content-wrap">
-                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;" v-model="searchTxt"></textarea>
+                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
+                    placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"
+                    v-model="searchTxt"></textarea>
                 <div v-if="hasLogin">
                     <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
                 </div>
@@ -29,14 +36,17 @@
                 <div class="guess-head-wrap">
                     <div class="guess-head-left">猜你想搜</div>
                     <div class="guess-head-right">
-                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-change.png" class="icon-change">
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-change.png"
+                            class="icon-change">
                         <div class="guess-change-text" @click="getRecommendList">换一换</div>
                     </div>
                 </div>
                 <div class="guess-item-group">
                     <template v-for="item in recommendList">
-                        <div class="guess-item-wrap" v-if="hasLogin" :key="item.id" @click="checkRecommend(item.label)">{{ item.label }}</div>
-                        <div class="guess-item-wrap" v-else :key="item.id" @click="showLoginDialog">{{ item.label }}</div>
+                        <div class="guess-item-wrap" v-if="hasLogin" :key="item.id" @click="checkRecommend(item.label)">
+                            {{ item.label }}</div>
+                        <div class="guess-item-wrap" v-else :key="item.id" @click="showLoginDialog">{{ item.label }}
+                        </div>
                     </template>
                     <!-- <div class="guess-item-wrap">我洗澡去了</div>
                     <div class="guess-item-wrap">明天再说吧</div>
@@ -82,12 +92,12 @@ export default {
         }),
         canSwitch() {
             let flag = false;
-            if(this.hasLogin) flag = true;
+            if (this.hasLogin) flag = true;
             // console.log('canSwitch=> ', this.hasLogin, flag)
             return flag
         },
         fadeOutScreenPageCls() {
-            return this.beginFadeOutScreenPage ?  'open-screen-page animated fadeOut' : 'open-screen-page'
+            return this.beginFadeOutScreenPage ? 'open-screen-page animated fadeOut' : 'open-screen-page'
         }
     },
     onShareAppMessage() {
@@ -135,16 +145,16 @@ export default {
             console.log('顶部高度：' + this.navHeight)
         },
         fadeOutOpenScreenPage() {
-            setTimeout(()=> {
+            setTimeout(() => {
                 this.beginFadeOutScreenPage = true;
                 this.isShowTabbar = true;
-                setTimeout(()=> {
+                setTimeout(() => {
                     this.showOpenScreenPage = false
                 }, 0)
             }, 0)
         },
         searchSimpleTxt() {
-            if(this.searchTxt == '') {
+            if (this.searchTxt == '') {
                 return uni.showToast({
                     title: "聊天内容为空~",
                     icon: "none",
@@ -257,22 +267,22 @@ export default {
         // 检查登录以及认证状态，显示对应弹窗提示
         async checkStatus() {
             console.log('点击tabbar', this.tabBarIndex)
-            if(!this.hasLogin) {
+            if (!this.hasLogin) {
                 uni.getUserProfile({
-                desc: '对话大师',
-                success: async (result) => {
-                    console.log('使用新api获取用户信息=> ', result);
-                    if (result.errMsg !== "getUserProfile:ok") {
-                        uni.showModal({
-                            title: "温馨提示",
-                            content: "请同意微信授权，开启高情商对话之旅",
-                            showCancel: false,
-                        });
-                        return;
+                    desc: '对话大师',
+                    success: async (result) => {
+                        console.log('使用新api获取用户信息=> ', result);
+                        if (result.errMsg !== "getUserProfile:ok") {
+                            uni.showModal({
+                                title: "温馨提示",
+                                content: "请同意微信授权，开启高情商对话之旅",
+                                showCancel: false,
+                            });
+                            return;
+                        }
+                        await this.$store.dispatch('GETOPENID');
+                        await this.$store.commit("LOGIN", result.userInfo);
                     }
-                    await this.$store.dispatch('GETOPENID');
-                    await this.$store.commit("LOGIN", result.userInfo);
-                }
                 });
                 return false;
             }
@@ -315,6 +325,7 @@ export default {
     justify-content: center;
     align-items: center;
 }
+
 .open-screen-page-logo {
     width: 280rpx;
     height: 280rpx;
@@ -348,8 +359,8 @@ export default {
     width: 670rpx;
     height: 530rpx;
     position: relative;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76, 166, 245, 0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
     display: block;
     margin: -36rpx auto 0;
     border: 3rpx solid #fff;
@@ -381,7 +392,7 @@ export default {
     width: 550rpx;
     height: 96rpx;
     background: #435AFC;
-    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76,166,245,0.33);
+    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76, 166, 245, 0.33);
     border-radius: 78rpx;
     font-family: PingFang-SC, PingFang-SC;
     font-weight: bold;

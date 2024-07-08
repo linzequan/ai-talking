@@ -17,7 +17,8 @@
                     <template v-if="item.position == 'right'">
                         <div class="chat-bubble-right" v-if="item.type == 'txt'">{{ item.content }}</div>
                         <div class="chat-bubble-right pic" v-else>
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
+                            <img :src="item.content" class="chat-bubble-pic" mode="widthFix"
+                                @click="prevImg(item.content)">
                         </div>
                     </template>
                     <!-- 渲染左侧结果 -->
@@ -43,7 +44,13 @@
                                         class="chat-bubble-op-icon">
                                     <div class="chat-bubble-op-text">收藏</div>
                                 </div>
-                                <div class="chat-bubble-op-item right" @click="changeTxtSearch(item.id)">
+                                <div class="chat-bubble-op-item right" v-if="item.type == 'txt'"
+                                    @click="changeTxtSearch(item.id)">
+                                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
+                                        class="chat-bubble-op-icon">
+                                    <div class="chat-bubble-op-text">换个答案</div>
+                                </div>
+                                <div class="chat-bubble-op-item right" v-else @click="changePicTxtSearch(item.id)">
                                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
                                         class="chat-bubble-op-icon">
                                     <div class="chat-bubble-op-text">换个答案</div>
@@ -53,10 +60,11 @@
                     </template>
                 </template>
 
-                <template v-if="searchTxt">
+                <template v-if="searchTxt || searchPicList.length > 0">
                     <div class="chat-bubble-right" v-if="resultType == 'txt'">{{ searchTxt }}</div>
                     <div class="chat-bubble-right pic" v-else>
-                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
+                        <img :src="searchPicList[0]" class="chat-bubble-pic" mode="widthFix"
+                            @click="prevImg(searchPicList[0])">
                     </div>
                 </template>
                 <template v-if="responseText">
@@ -90,46 +98,48 @@
                     </div>
                 </template>
             </div>
-            <div :class="fadeInMoreCls" style="animation-duration: 1s; animation-delay: 1s;">
+            <div :class="fadeInMoreCls" style="animation-duration: 1s; animation-delay: .5s;">
                 <div class="chat-break-wrap">再聊点新内容吧</div>
                 <div class="chat-content-wrap" v-if="resultType == 'txt'">
                     <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
-                        placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;" v-model="newSearchTxt"></textarea>
+                        placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"
+                        v-model="newSearchTxt"></textarea>
                     <div class="chat-content-btn" @click="handleAnotherTxtSearch">一键生成回复</div>
                 </div>
                 <div class="upload-wrap" v-else>
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png"
+                        class="ai-chat-upload-btn" @click="openActionSheet">
                     <div class="upload-tip">上传聊天图片生成智能回复</div>
-                    <div class="chat-content-btn">生成智能回复</div>
+                    <div class="chat-content-btn" @click="handleSearchPicTxt([])">生成智能回复</div>
                 </div>
             </div>
         </div>
         <tui-bottom-popup :zIndex="1002" :maskZIndex="1001" :show="popupShow" @close="hiddenPopup">
             <div class="layer-head-wrap">
                 <div class="layer-head-text">转发到</div>
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-close.png" class="icon-close" @click="hiddenPopup">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-close.png" class="icon-close"
+                    @click="hiddenPopup">
             </div>
             <div class="layer-content-wrap">
                 <div class="layer-item-wrap">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-wechat.png" class="layer-item-icon">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-wechat.png"
+                        class="layer-item-icon">
                     <div class="layer-item-text">微信好友</div>
                 </div>
                 <div class="layer-item-wrap">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-moments.png" class="layer-item-icon">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-moments.png"
+                        class="layer-item-icon">
                     <div class="layer-item-text">朋友圈</div>
                 </div>
                 <div class="layer-item-wrap">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-poster.png" class="layer-item-icon">
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-poster.png"
+                        class="layer-item-icon">
                     <div class="layer-item-text">生成图片</div>
                 </div>
             </div>
         </tui-bottom-popup>
 
-        <tui-actionsheet  
-            :show="showActionSheet" 
-            :item-list="itemList" 
-            @click="itemClick" 
-            @cancel="closeActionSheet">
+        <tui-actionsheet :show="showActionSheet" :item-list="itemList" @click="itemClick" @cancel="closeActionSheet">
         </tui-actionsheet>
     </div>
 </template>
@@ -163,6 +173,8 @@ export default {
             requestTask: undefined,
             searchTxt: '',
             responseText: '',
+            searchPicList: [],
+            responsePicText: '',
             chatLogList: [],
             // [{
             //     type: txt,
@@ -175,16 +187,17 @@ export default {
     },
     computed: {
         fadeInMoreCls() {
-            return !this.hasSearch ?  'animated fadeInUp' : 'dn'
+            return !this.hasSearch ? 'animated fadeInUp' : 'dn'
         }
     },
     async onLoad(e) {
         this.calcTopHeight()
         this.resultType = e.type || 'txt'
-        if(this.resultType == 'txt') {
+        console.log(this.resultType)
+        if (this.resultType == 'txt') {
             // 搜索文本
             this.searchTxt = uni.getStorageSync('simple_chat_text', '')
-            if(this.searchTxt == '') {
+            if (this.searchTxt == '') {
                 uni.setStorageSync('simple_chat_text', '');
                 uni.showToast({
                     title: "参数异常~",
@@ -196,6 +209,19 @@ export default {
             // 查询历史聊天记录
             // await this.getChatLog(this.resultType)
             await this.handleSearchTxt(this.searchTxt)
+        } else if (this.resultType == 'pic') {
+            // 搜索图片
+            this.searchPicList = uni.getStorageSync('ai_chat_pic', [])
+            if (this.searchPicList.length == 0) {
+                uni.setStorageSync('ai_chat_pic', []);
+                uni.showToast({
+                    title: "参数异常~",
+                    icon: "none",
+                });
+                this.goback()
+                return
+            }
+            await this.handleSearchPicTxt(this.searchPicList)
         }
     },
     onShareAppMessage() {
@@ -255,11 +281,84 @@ export default {
         openActionSheet(type) {
             this.showActionSheet = true;
         },
+        uploadImg(res) {
+            // tempFilePath可以作为img标签的src属性显示图片
+            const tempFilePaths = res.tempFiles;
+            const tempFiles = res.tempFiles;
+            const self = this
+            if (!tempFilePaths[0]) {
+                uni.showToast({
+                    title: "请上传图片",
+                    duration: 2000,
+                    icon: "none",
+                });
+                return;
+            }
+            self.value2 = tempFilePaths[0].path;
+            uni.showLoading({
+                mask: true,
+                title: "加载中",
+            });
+            uni.uploadFile({
+                url: self.$store.state.domain + "post?actionxm=upload",
+                method: "post",
+                filePath: tempFilePaths[0].path,
+                name: "file",
+                formData: {
+                    type: 'aichat',
+                    openid: self.$store.state.openid,
+                },
+                success: (res) => {
+                    uni.hideLoading();
+                    const resultObj = JSON.parse(res.data)
+                    if (resultObj['status'] == 0) {
+                        self.searchPicList = []
+                        self.$forceUpdate()
+                        self.searchPicList.push(resultObj.url)
+                        self.handleSearchPicTxt(self.searchPicList)
+                    } else {
+                        uni.showToast({
+                            title: "图片上传失败",
+                            duration: 2000,
+                            icon: "none",
+                        });
+                        return;
+                    }
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+                complete: () => {
+                    uni.hideLoading();
+                },
+            });
+        },
         itemClick(e) {
             console.log(e)
             let index = e.index;
             this.closeActionSheet();
-            this.tui.toast(`您点击的按钮索引为：${index}`)
+            var self = this
+            if (index == 0) {
+                // 拍摄
+                uni.chooseImage({
+                    count: 1, //默认9
+                    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['camera'], //从相册选择
+                    success(res) {
+                        self.uploadImg(res)
+                    }
+                });
+            } else if (index == 1) {
+                // 从相册选择
+                uni.chooseImage({
+                    count: 1, //默认9
+                    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['album'], //从相册选择
+                    success(res) {
+                        self.uploadImg(res)
+                    }
+                });
+            }
         },
         goback() {
             uni.navigateBack({
@@ -268,7 +367,7 @@ export default {
         },
         // 搜索文本
         handleSearchTxt(txt) {
-            if(txt == '') {
+            if (txt == '') {
                 return uni.showToast({
                     title: "聊天内容为空~",
                     icon: "none",
@@ -281,7 +380,7 @@ export default {
                 data: {
                     txt: txt
                 },
-                header: {'Content-Type': 'application/json'},
+                header: { 'Content-Type': 'application/json' },
                 enableChunked: true,
                 responseType: 'text',
                 method: 'GET',
@@ -329,6 +428,7 @@ export default {
             let data = uni.arrayBufferToBase64(uint8Array)
             data = new Buffer(data, 'base64')
             data = data.toString('utf8')
+            console.log(data)
             const lines = data.split("\n\n")
             lines.forEach(line => {
                 if (!line.trim()) {
@@ -336,6 +436,63 @@ export default {
                 }
                 this.responseText += line.trim()
             })
+        },
+        // 搜索图片
+        handleSearchPicTxt(picList) {
+            if (picList.length == 0) {
+                return uni.showToast({
+                    title: "请先上传图片~",
+                    icon: "none",
+                });
+            }
+            // picList = ['https://wxpma-stg1.kakaday.com//mnt-public/aitalking/aichat/oswkJ7YAK_VjhWu0X98X-vxEcmkk_1720460850t8g53ks1.jpg']
+            this.hasSearch = true
+            this.requestTask = wx.request({
+                // url: 'http://dev.wxpma.com/index.php/aitalking/get_ai_chat',
+                url: this.$store.state.domain + 'get_ai_chat',
+                data: {
+                    picList: picList
+                },
+                header: { 'Content-Type': 'application/json' },
+                enableChunked: true,
+                responseType: 'text',
+                method: 'GET',
+                timeout: 300e3,
+                success: res => {
+                    console.log('handleSearchPicTxt finish', res)
+                    console.log('保存聊天记录')
+                    this.saveChatLog('pic', JSON.stringify({
+                        response: this.responseText,
+                        pic: this.searchPicList[0]
+                    }))
+                    const timestamp = Date.now()
+                    // 保存搜索词
+                    this.chatLogList.push({
+                        id: timestamp,
+                        type: 'pic',
+                        position: 'right',
+                        content: this.searchPicList[0]
+                    })
+                    // 保存回复
+                    this.chatLogList.push({
+                        id: timestamp,
+                        type: 'pic',
+                        position: 'left',
+                        content: this.responseText
+                    })
+                    this.responseText = ''
+                    this.searchPicList = []
+                    this.hasSearch = false
+                    console.log(this.chatLogList)
+                },
+                fail: (err) => {
+                    this.hasSearch = false
+                    console.error('handleSearchTxt err: ', err)
+                }
+            });
+            this.requestTask.onHeadersReceived(res => {
+            })
+            this.requestTask.onChunkReceived(res => this.handleChunk(res))
         },
         // 保存聊天记录
         saveChatLog(type, params) {
@@ -364,20 +521,36 @@ export default {
                 console.log(res)
             });
         },
-        // 换个答案
+        // 文字搜索换个答案
         changeTxtSearch(id) {
             // 从当前chatLogList获取右侧的查询词
             const newArr = []
             this.chatLogList.forEach(item => {
-                if(item.id == id && item.position == 'right') {
+                if (item.id == id && item.position == 'right') {
                     this.searchTxt = item.content
                 }
-                if(item.id != id) {
+                if (item.id != id) {
                     newArr.push(item)
                 }
             })
             this.chatLogList = newArr
             this.handleSearchTxt(this.searchTxt)
+        },
+        // 图片搜索换个答案
+        changePicTxtSearch(id) {
+            // 从当前chatLogList获取右侧的查询词
+            const newArr = []
+            this.searchPicList = []
+            this.chatLogList.forEach(item => {
+                if (item.id == id && item.position == 'right') {
+                    this.searchPicList.push(item.content)
+                }
+                if (item.id != id) {
+                    newArr.push(item)
+                }
+            })
+            this.chatLogList = newArr
+            this.handleSearchPicTxt(this.searchPicList)
         }
     },
 };
@@ -660,8 +833,8 @@ export default {
 .upload-wrap {
     width: 670rpx;
     height: 530rpx;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76, 166, 245, 0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
     border-radius: 24rpx;
     border: 3rpx solid #FFFFFF;
     margin: 80rpx auto;
@@ -688,7 +861,7 @@ export default {
     width: 550rpx;
     height: 96rpx;
     background: #435AFC;
-    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76,166,245,0.33);
+    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76, 166, 245, 0.33);
     border-radius: 78rpx;
     font-family: PingFang-SC, PingFang-SC;
     font-weight: bold;

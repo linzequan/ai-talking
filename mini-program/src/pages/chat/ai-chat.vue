@@ -2,38 +2,40 @@
     <div class="main-page">
         <view class="nav" :style="'background-color: rgba(248, 248, 248, ' + op + ')'">
             <view class="status-bar" :style="'height:' + statusBarHeight + 'px'"></view>
-            <view class="title" :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">聊天大师</view>
+            <view class="title"
+                :style="'color: rgba(0, 0, 0,' + op + '); height: ' + navigationBarHeight + 'px; line-height: ' + navigationBarHeight + 'px;'">
+                聊天大师</view>
         </view>
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="top-wrap">
-            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-title.png" class="top-wrap-title" mode="widthFix">
+            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-title.png"
+                class="top-wrap-title" mode="widthFix">
         </div>
         <div class="upload-wrap">
-            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
+            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png"
+                class="ai-chat-upload-btn" @click="openActionSheet">
             <div class="upload-tip">上传聊天图片生成智能回复</div>
             <div class="chat-content-btn" @click="searchAiResult">生成智能回复</div>
         </div>
         <div class="upload-demo-wrap">
-                <div class="upload-demo-head-wrap">
-                    <div class="upload-demo-head-left">示例图片</div>
-                    <!-- <div class="upload-demo-head-right">
+            <div class="upload-demo-head-wrap">
+                <div class="upload-demo-head-left">示例图片</div>
+                <!-- <div class="upload-demo-head-right">
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-change.png" class="icon-change">
                         <div class="upload-demo-change-text">换一换</div>
                     </div> -->
-                </div>
-                <div class="upload-demo-item-group">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-demo01.png" class="ai-chat-demo-pic" mode="widthFix">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-demo02.png" class="ai-chat-demo-pic" mode="widthFix">
-                </div>
             </div>
+            <div class="upload-demo-item-group">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-demo01.png"
+                    class="ai-chat-demo-pic" mode="widthFix">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-demo02.png"
+                    class="ai-chat-demo-pic" mode="widthFix">
+            </div>
+        </div>
         <div class="footer-tabbar-wrap" v-show="isShowTabbar">
             <tui-tabbar></tui-tabbar>
         </div>
-        <tui-actionsheet  
-            :show="showActionSheet" 
-            :item-list="itemList" 
-            @click="itemClick" 
-            @cancel="closeActionSheet">
+        <tui-actionsheet :show="showActionSheet" :item-list="itemList" @click="itemClick" @cancel="closeActionSheet">
         </tui-actionsheet>
     </div>
 </template>
@@ -60,7 +62,9 @@ export default {
                 text: "从手机相册选择",
                 color: "#333333"
             }],
-            isShowTabbar: true
+            isShowTabbar: true,
+            // 图片
+            picList: []
         };
     },
     onLoad(e) {
@@ -108,13 +112,95 @@ export default {
             this.isShowTabbar = false;
             this.showActionSheet = true;
         },
+        // 选择图片或者拍摄图片后进行上传
+        uploadImg(res) {
+            // tempFilePath可以作为img标签的src属性显示图片
+            const tempFilePaths = res.tempFiles;
+            const tempFiles = res.tempFiles;
+            const self = this;
+            if (!tempFilePaths[0]) {
+                uni.showToast({
+                    title: "请上传图片",
+                    duration: 2000,
+                    icon: "none",
+                });
+                return;
+            }
+            self.value2 = tempFilePaths[0].path;
+            uni.showLoading({
+                mask: true,
+                title: "加载中",
+            });
+            uni.uploadFile({
+                url: self.$store.state.domain + "post?actionxm=upload",
+                method: "post",
+                filePath: tempFilePaths[0].path,
+                name: "file",
+                formData: {
+                    type: 'aichat',
+                    openid: self.$store.state.openid,
+                },
+                success: (res) => {
+                    uni.hideLoading();
+                    const resultObj = JSON.parse(res.data)
+                    if (resultObj['status'] == 0) {
+                        self.$forceUpdate()
+                        self.picList.push(resultObj.url)
+                        self.searchAiResult()
+                    } else {
+                        uni.showToast({
+                            title: "图片上传失败",
+                            duration: 2000,
+                            icon: "none",
+                        });
+                        return;
+                    }
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+                complete: () => {
+                    uni.hideLoading();
+                },
+            });
+        },
         itemClick(e) {
-            console.log(e)
+            const self = this
             let index = e.index;
             this.closeActionSheet();
-            this.tui.toast(`您点击的按钮索引为：${index}`)
+            if (index == 0) {
+                // 拍摄
+                uni.chooseImage({
+                    count: 1, //默认9
+                    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['camera'], //从相册选择
+                    success(res) {
+                        self.uploadImg(res)
+                    }
+                });
+            } else if (index == 1) {
+                // 从相册选择
+                uni.chooseImage({
+                    count: 1, //默认9
+                    sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
+                    sourceType: ['album'], //从相册选择
+                    success(res) {
+                        self.uploadImg(res)
+                    }
+                });
+            }
         },
         searchAiResult() {
+            if (this.picList.length == 0) {
+                return uni.showToast({
+                    title: "请先上传图片~",
+                    icon: "none",
+                });
+            }
+            // 将图片存入缓存
+            console.log(this.picList)
+            uni.setStorageSync('ai_chat_pic', this.picList);
+            this.picList = []
             uni.navigateTo({
                 url: '/pages/chat/search-result?type=pic'
             })
@@ -163,8 +249,8 @@ export default {
 .upload-wrap {
     width: 670rpx;
     height: 530rpx;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76,166,245,0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(76, 166, 245, 0.2), inset 0rpx 6rpx 46rpx 0rpx #DBECFC;
     border-radius: 24rpx;
     border: 3rpx solid #FFFFFF;
     margin: -36rpx auto 0;
@@ -191,7 +277,7 @@ export default {
     width: 550rpx;
     height: 96rpx;
     background: #435AFC;
-    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76,166,245,0.33);
+    box-shadow: 0rpx 24rpx 40rpx 0rpx rgba(76, 166, 245, 0.33);
     border-radius: 78rpx;
     font-family: PingFang-SC, PingFang-SC;
     font-weight: bold;
@@ -245,8 +331,8 @@ export default {
 
 .upload-demo-item-group {
     width: 610rpx;
-    background: rgba(255,255,255,0);
-    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(120,76,245,0.2);
+    background: rgba(255, 255, 255, 0);
+    box-shadow: 0rpx 22rpx 54rpx 0rpx rgba(120, 76, 245, 0.2);
     border-radius: 24rpx;
     border: 3rpx solid #DFD3F8;
     filter: blur(0px);
