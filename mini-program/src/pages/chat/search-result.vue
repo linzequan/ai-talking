@@ -12,49 +12,96 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
             <div class="chat-result-wrap">
-                <div class="chat-bubble-right" v-if="resultType == 'txt'">{{ searchTxt }}</div>
-                <div class="chat-bubble-right pic" v-else>
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
-                </div>
-                <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">{{ responseText }}
-                        <!-- 甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？ -->
+                <template v-for="item in chatLogList">
+                    <!-- 渲染右侧搜索词 -->
+                    <template v-if="item.position == 'right'">
+                        <div class="chat-bubble-right" v-if="item.type == 'txt'">{{ item.content }}</div>
+                        <div class="chat-bubble-right pic" v-else>
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
+                        </div>
+                    </template>
+                    <!-- 渲染左侧结果 -->
+                    <template v-if="item.position == 'left'">
+                        <div class="chat-bubble-response">
+                            <div class="chat-bubble-response-text">{{ item.content }}
+                                <!-- 甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？ -->
+                            </div>
+                            <div class="chat-bubble-response-break-line"></div>
+                            <div class="chat-bubble-op-wrap">
+                                <div class="chat-bubble-op-item left">
+                                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
+                                        class="chat-bubble-op-icon">
+                                    <div class="chat-bubble-op-text">复制</div>
+                                </div>
+                                <div class="chat-bubble-op-item left" @click="showPopup">
+                                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
+                                        class="chat-bubble-op-icon">
+                                    <div class="chat-bubble-op-text">转发</div>
+                                </div>
+                                <div class="chat-bubble-op-item left">
+                                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
+                                        class="chat-bubble-op-icon">
+                                    <div class="chat-bubble-op-text">收藏</div>
+                                </div>
+                                <div class="chat-bubble-op-item right" @click="changeTxtSearch(item.id)">
+                                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
+                                        class="chat-bubble-op-icon">
+                                    <div class="chat-bubble-op-text">换个答案</div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+
+                <template v-if="searchTxt">
+                    <div class="chat-bubble-right" v-if="resultType == 'txt'">{{ searchTxt }}</div>
+                    <div class="chat-bubble-right pic" v-else>
+                        <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
                     </div>
-                    <div class="chat-bubble-response-break-line" v-if="responseText"></div>
-                    <div class="chat-bubble-op-wrap" v-if="responseText">
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">复制</div>
+                </template>
+                <template v-if="responseText">
+                    <div class="chat-bubble-response">
+                        <div class="chat-bubble-response-text">{{ responseText }}
+                            <!-- 甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？ -->
                         </div>
-                        <div class="chat-bubble-op-item left" @click="showPopup">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">转发</div>
-                        </div>
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">收藏</div>
-                        </div>
-                        <div class="chat-bubble-op-item right">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">换个答案</div>
-                        </div>
+                        <!-- <div class="chat-bubble-response-break-line" v-if="responseText"></div>
+                        <div class="chat-bubble-op-wrap" v-if="responseText">
+                            <div class="chat-bubble-op-item left">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">复制</div>
+                            </div>
+                            <div class="chat-bubble-op-item left" @click="showPopup">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">转发</div>
+                            </div>
+                            <div class="chat-bubble-op-item left">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">收藏</div>
+                            </div>
+                            <div class="chat-bubble-op-item right">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-icon-change.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">换个答案</div>
+                            </div>
+                        </div> -->
                     </div>
+                </template>
+            </div>
+            <div :class="fadeInMoreCls" style="animation-duration: 1s; animation-delay: 1s;">
+                <div class="chat-break-wrap">再聊点新内容吧</div>
+                <div class="chat-content-wrap" v-if="resultType == 'txt'">
+                    <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
+                        placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;" v-model="newSearchTxt"></textarea>
+                    <div class="chat-content-btn" @click="handleAnotherTxtSearch">一键生成回复</div>
                 </div>
-            </div>
-            <div class="chat-break-wrap">再聊点新内容吧</div>
-            <div class="chat-content-wrap" v-if="resultType == 'txt'">
-                <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
-                    placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"></textarea>
-                <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
-            </div>
-            <div class="upload-wrap" v-else>
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
-                <div class="upload-tip">上传聊天图片生成智能回复</div>
-                <div class="chat-content-btn">生成智能回复</div>
+                <div class="upload-wrap" v-else>
+                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png" class="ai-chat-upload-btn" @click="openActionSheet">
+                    <div class="upload-tip">上传聊天图片生成智能回复</div>
+                    <div class="chat-content-btn">生成智能回复</div>
+                </div>
             </div>
         </div>
         <tui-bottom-popup :zIndex="1002" :maskZIndex="1001" :show="popupShow" @close="hiddenPopup">
@@ -116,8 +163,20 @@ export default {
             requestTask: undefined,
             searchTxt: '',
             responseText: '',
-            chatLog: []
+            chatLogList: [],
+            // [{
+            //     type: txt,
+            //     position: 'right',
+            //     content: 'xxxx'
+            // }]
+            newSearchTxt: '',
+            hasSearch: true,
         };
+    },
+    computed: {
+        fadeInMoreCls() {
+            return !this.hasSearch ?  'animated fadeInUp' : 'dn'
+        }
     },
     async onLoad(e) {
         this.calcTopHeight()
@@ -135,7 +194,7 @@ export default {
                 return
             }
             // 查询历史聊天记录
-            await this.getChatLog(this.resultType)
+            // await this.getChatLog(this.resultType)
             await this.handleSearchTxt(this.searchTxt)
         }
     },
@@ -171,6 +230,11 @@ export default {
             this.navHeight = this.statusBarHeight + this.navigationBarHeight
             console.log('顶部高度：' + this.navHeight)
         },
+        handleAnotherTxtSearch() {
+            this.searchTxt = this.newSearchTxt
+            this.newSearchTxt = ''
+            this.handleSearchTxt(this.searchTxt)
+        },
         prevImg(img) {
             wx.previewImage({
                 urls: [img]
@@ -204,6 +268,13 @@ export default {
         },
         // 搜索文本
         handleSearchTxt(txt) {
+            if(txt == '') {
+                return uni.showToast({
+                    title: "聊天内容为空~",
+                    icon: "none",
+                });
+            }
+            this.hasSearch = true
             this.requestTask = wx.request({
                 // url: 'http://dev.wxpma.com/index.php/aitalking/get_simple_chat',
                 url: this.$store.state.domain + 'get_simple_chat',
@@ -222,8 +293,28 @@ export default {
                         response: this.responseText,
                         txt: this.searchTxt
                     }))
+                    const timestamp = Date.now()
+                    // 保存搜索词
+                    this.chatLogList.push({
+                        id: timestamp,
+                        type: 'txt',
+                        position: 'right',
+                        content: this.searchTxt
+                    })
+                    // 保存回复
+                    this.chatLogList.push({
+                        id: timestamp,
+                        type: 'txt',
+                        position: 'left',
+                        content: this.responseText
+                    })
+                    this.responseText = ''
+                    this.searchTxt = ''
+                    this.hasSearch = false
+                    console.log(this.chatLogList)
                 },
                 fail: (err) => {
+                    this.hasSearch = false
                     console.error('handleSearchTxt err: ', err)
                 }
             });
@@ -272,6 +363,21 @@ export default {
             }).then((res) => {
                 console.log(res)
             });
+        },
+        // 换个答案
+        changeTxtSearch(id) {
+            // 从当前chatLogList获取右侧的查询词
+            const newArr = []
+            this.chatLogList.forEach(item => {
+                if(item.id == id && item.position == 'right') {
+                    this.searchTxt = item.content
+                }
+                if(item.id != id) {
+                    newArr.push(item)
+                }
+            })
+            this.chatLogList = newArr
+            this.handleSearchTxt(this.searchTxt)
         }
     },
 };
@@ -591,5 +697,9 @@ export default {
     text-align: center;
     line-height: 96rpx;
     margin: 30rpx auto 0;
+}
+
+.dn {
+    display: none;
 }
 </style>
