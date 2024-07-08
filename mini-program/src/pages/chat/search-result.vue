@@ -202,7 +202,8 @@ export default {
         // 搜索文本
         handleSearchTxt(txt) {
             this.requestTask = wx.request({
-                // url: 'http://dev.wxpma.com/index.php/aitalking/post?actionxm=get_simple_chat',
+                // url: 'http://dev.wxpma.com/index.php/aitalking/get_simple_chat',
+                // url: 'http://dev.wxpma.com/index.php/aitalking/post?actionxm=test',
                 url: this.$store.state.domain + 'get_simple_chat',
                 data: {
                     txt: txt
@@ -213,9 +214,10 @@ export default {
                 method: 'GET',
                 timeout: 300e3,
                 success: res => {
-                    console.log('request=> ', res)
+                    console.log('handleSearchTxt finish')
                 },
-                fail: () => {
+                fail: (err) => {
+                    console.error('handleSearchTxt err: ', err)
                 }
             });
             this.requestTask.onHeadersReceived(res => {
@@ -242,18 +244,17 @@ export default {
             }
         },
         handleChunk(res) {
-            console.log('trigger handleChunk')
             const arrayBuffer = res.data;
             const uint8Array = new Uint8Array(arrayBuffer);
             let data = uni.arrayBufferToBase64(uint8Array)
             data = new Buffer(data, 'base64')
             data = data.toString('utf8')
-            console.log(data)
             const lines = data.split("\n\n")
             lines.forEach(line => {
                 if (!line.trim()) {
                     return
                 }
+                console.log(line.trim())
                 this.responseText += line.trim()
                 // console.log(line.trim())
                 // const data = this.parseSSEData(line.trim());

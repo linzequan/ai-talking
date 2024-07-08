@@ -14,7 +14,7 @@ export default {
     },
     onLoad(e) {
         console.log('start getdata')
-        this.getData()
+        // this.getData()
     },
     methods: {
         getData() {
@@ -22,7 +22,7 @@ export default {
             var url = 'https://wxpma-stg1.kakaday.com/index.php/aitalking/post?actionxm=test';
             var source = new EventSource(url);
             source.onmessage = (event)=> {
-                console.log(event.data)
+                console.log(event, event.data)
                 this.log += event.data + "\n"
                 // document.getElementById("log").innerText += event.data + "\n";
             };
