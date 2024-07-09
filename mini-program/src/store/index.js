@@ -96,7 +96,7 @@ const store = new Vuex.Store({
             if (payload) {
                 state.tabBarIndex = payload.index
             }
-        },
+        }
     },
     actions: {
         'GETOPENID': async function({

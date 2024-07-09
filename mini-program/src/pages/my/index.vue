@@ -8,8 +8,14 @@
         <div class="wrap">
             <div class="top-wrap">
                 <!-- <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png" class="my-avatar" mode="widthFix"> -->
-                <img :src="userinfo.wx_avatarUrl" class="my-avatar">
-                <div class="my-nickname">{{ userinfo.wx_nickname }}</div>
+                <!-- <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+                    <image class="avatar" src="{{avatarUrl}}"></image>
+                </button>  -->
+                <button class="my-avatar-wrap" open-type="chooseAvatar" @chooseavatar="onChooseAvatar">
+                    <img :src="userinfo.avatarUrl" class="my-avatar">
+                    <div class="my-avatar-tip">更换</div>
+                </button>
+                <div class="my-nickname">{{ userinfo.nickname }}</div>
                 <div class="my-vip-status">非会员</div>
             </div>
             <div class="menu-wrap">
@@ -67,8 +73,8 @@ export default {
             navigationBarHeight: 0,
             op: 0,
             userinfo: {
-                wx_avatarUrl: 'https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png',
-                wx_nickname: 'Jadia',
+                avatarUrl: 'https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-avatar.png',
+                nickname: 'Jadia',
                 vip_status: 'N'
             }
         };
@@ -83,8 +89,8 @@ export default {
     onLoad(e) {
         this.calcTopHeight()
         console.log('this.userLoginInfo=> ', this.userLoginInfo)
-        this.userinfo.wx_avatarUrl = this.userLoginInfo['wx_avatarUrl']
-        this.userinfo.wx_nickname = this.userLoginInfo['wx_nickname']
+        this.userinfo.avatarUrl = this.userLoginInfo['user_avatarUrl'] == '' ? this.userLoginInfo['wx_avatarUrl'] : this.userLoginInfo['user_avatarUrl']
+        this.userinfo.nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
     },
     onShareAppMessage() {
     },
@@ -149,7 +155,126 @@ export default {
             uni.navigateTo({
                 url: '/pages/my/collect'
             })
-        }
+        },
+        // 更换头像
+        onChooseAvatar(e) {
+            const { avatarUrl } = e.detail
+            this.userinfo.avatarUrl = avatarUrl
+            this.uploadImg(avatarUrl)
+        },
+        // 上传图片
+        uploadImg(tempFile) {
+            const self = this
+            if(!tempFile) {
+                uni.showToast({
+                    title: "请上传图片~",
+                    icon: "none",
+                });
+                return;
+            }
+            uni.showLoading({
+                mask: true,
+                title: "上传中..",
+            });
+            uni.uploadFile({
+                url: self.$store.state.domain + "post?actionxm=upload",
+                method: "post",
+                // filePath: tempFilePaths[0].path,
+                filePath: tempFile,
+                name: "file",
+                formData: {
+                    type: 'avatar',
+                    openid: self.$store.state.openid,
+                },
+                success: (res) => {
+                    uni.hideLoading();
+                    const resultObj = JSON.parse(res.data)
+                    if (resultObj['status'] == 0) {
+                        console.log(resultObj)
+                        self.updateUserAvatar(resultObj.url)
+                    } else {
+                        uni.showToast({
+                            title: "图片上传失败",
+                            duration: 2000,
+                            icon: "none",
+                        });
+                        return;
+                    }
+                },
+                error: (error) => {
+                    console.log(error);
+                },
+                complete: () => {
+                    uni.hideLoading();
+                },
+            });
+        },
+        // 更新头像
+        updateUserAvatar(avatar) {
+            if(!avatar) {
+                uni.showToast({
+                    title: "图片上传失败~",
+                    icon: "none",
+                });
+                return;
+            }
+            this.$fetch({
+                url: this.$store.state.domain + 'post?actionxm=update_userinfo_avatar',
+                data: {
+                    avatar: avatar
+                },
+                method: 'post',
+                showLoading: true,
+            }).then(async (res) => {
+                if(res.status == 0) {
+                    console.log(res) 
+                    await this.getUserInfo()
+                    uni.showToast({
+                        title: '更新成功~',
+                        icon: "none"
+                    })
+                } else {
+                    uni.showToast({
+                        title: res.msg,
+                        icon: "none",
+                    });
+                }
+            });
+        },
+        getUserInfo() {
+            new Promise((resolve, reject) => {
+                this.$fetch({
+                    url: this.$store.state.domain + 'get?actionxm=get_userinfo_by_openid',
+                    method: 'get',
+                    showLoading: false,
+                }).then((res) => {
+                    console.log(res)
+                    if(res.status == 0) {
+                        this.$store.commit('userLoginInfo', res['data']['userinfo']);
+                    } else {
+                        uni.showModal({
+                            title: "温馨提示",
+                            content: "新版本已更新，点击确认升级~",
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    // 获取当前页面信息
+                                    const pages = getCurrentPages();
+                                    const currentPage = pages[pages.length - 1];
+
+                                    // 获取当前页面的路径
+                                    const currentPath = currentPage.route;
+                                    uni.reLaunch({
+                                        url: currentPath
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    return resolve(res)
+                });
+            })
+        },
     },
 };
 </script>
@@ -192,12 +317,37 @@ export default {
     padding-top: 108rpx;
 }
 
+.my-avatar-wrap {
+    width: 132rpx;
+    height: 132rpx;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    padding: 0;
+    line-height: 1.5;
+}
+
 .my-avatar {
     width: 132rpx;
     height: 132rpx;
     display: block;
     margin: 0 auto;
     border-radius: 50%;
+}
+
+.my-avatar-tip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: #fff;
+    background: rgba(0, 0, 0, .5);
+    font-size: 20rpx;
+    text-align: center;
+    z-index: 10;
+    display: block;
+    width: 100%;
 }
 
 .my-nickname {
