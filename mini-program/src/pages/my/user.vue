@@ -10,24 +10,24 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="main-wrap">
             <div class="choose-sex-wrap">
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/user-boy.png" class="user-boy">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/user-boy.png" :class="boyAniCls" style="animation-duration: .5s; animation-delay: 0;">
                 <div class="choose-sex-op">
                     <div class="choose-sex-title">请选择你的性别</div>
                     <div class="choose-sex-group">
-                        <div class="choose-sex-item checked">女生</div>
-                        <div class="choose-sex-item">男生</div>
+                        <div :class="[user_sex == '男' ? 'choose-sex-item checked' : 'choose-sex-item']" @click="changeSex('男')">男生</div>
+                        <div :class="[user_sex == '女' ? 'choose-sex-item checked' : 'choose-sex-item']" @click="changeSex('女')">女生</div>
                     </div>
                 </div>
-                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/user-girl.png" class="user-girl">
+                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/user-girl.png" :class="girlAniCls" style="animation-duration: .5s; animation-delay: 0;">
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">昵称</div>
-                <input type="text" class="form-item-input" placeholder="请输入您的昵称" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;">
+                <input type="text" class="form-item-input" placeholder="请输入您的昵称" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" v-model="user_nickname">
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">出生年月</div>
                 <picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange" class="form-item-picker">
-                    <input type="text" class="form-item-input" placeholder="请选择您的出生日期" readonly="true" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" :value="date">
+                    <input type="text" class="form-item-input" placeholder="请选择您的出生日期" readonly="true" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" v-model="birth">
                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right">
                 </picker>
             </div>
@@ -35,41 +35,13 @@
                 <div class="form-item-label">个性描述</div>
                 <textarea class="form-item-textarea" maxlength="-1" placeholder="请输入您个性描述" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #999999;"></textarea>
             </div>
-            <div class="user-save-btn" @click="searchSimpleTxt">保存</div>
+            <div class="user-save-btn" @click="handleUpdateUser">保存</div>
         </div>
-
-        <!-- <div class="form-wrap">
-            <div class="form-item-wrap">
-                <div class="form-item-label">昵称</div>
-                <input type="text" placeholder="请输入昵称" :value="nickname" class="form-item-input">
-            </div>
-            <div class="form-item-wrap">
-                <div class="form-item-label">性别</div>
-                <radio-group name="sex" class="form-item-radio-group">
-                    <label>
-                        <radio class="form-item-radio" value="男" checked="true"/><text>男</text>
-                    </label>
-                    <label>
-                        <radio class="form-item-radio" value="女" /><text>女</text>
-                    </label>
-                </radio-group>
-            </div>
-            <div class="form-item-wrap">
-                <div class="form-item-label">出生年月</div>
-                <picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange" class="form-item-picker">
-                    <view class="uni-input">{{date}}</view>
-                </picker>
-            </div>
-            <div class="form-item-wrap">
-                <div class="form-item-label">个性描述</div>
-                <textarea class="form-item-textarea" placeholder="请输入个性描述，生成更精准的聊天对话.." maxlength="-1" />
-            </div>
-            <button size="default" type="default" class="submit-btn">保存</button>
-        </div> -->
     </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
     data() {
         const currentDate = this.getDate({
@@ -81,17 +53,28 @@ export default {
             statusBarHeight: 0,
             navigationBarHeight: 0,
             op: 0,
-            nickname: '',
-            sex: '男',
-            date: '',
+            user_nickname: '',
+            user_sex: '男',
+            description: '',
+            birth: ''
         };
     },
     computed: {
+        ...mapState({
+            hasLogin: (state) => state.hasLogin,
+            userLoginInfo: (state) => state.userLoginInfo
+        }),
         startDate() {
             return this.getDate('start');
         },
         endDate() {
             return this.getDate('end');
+        },
+        boyAniCls() {
+            return this.user_sex == '男' ? 'user-boy animated fadeInLeft' : 'user-boy dn'
+        },
+        girlAniCls() {
+            return this.user_sex == '女' ? 'user-girl animated fadeInRight' : 'user-girl dn'
         }
     },
     onPageScroll(res) {
@@ -115,6 +98,11 @@ export default {
     },
     onLoad(e) {
         this.calcTopHeight()
+        console.log('this.userLoginInfo=> ', this.userLoginInfo)
+        this.user_nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
+        this.user_sex = this.userLoginInfo['user_sex'] == '' ? '男' : this.userLoginInfo['user_sex']
+        this.description = !!this.userLoginInfo['description'] ? '' : this.userLoginInfo['description']
+        this.birth = this.userLoginInfo['birth']
     },
     methods: {
         calcTopHeight() {
@@ -126,6 +114,9 @@ export default {
             this.navigationBarHeight = custom.height + (custom.top - this.statusBarHeight) * 2
             this.navHeight = this.statusBarHeight + this.navigationBarHeight
             console.log('顶部高度：' + this.navHeight)
+        },
+        changeSex(val) {
+            this.user_sex = val
         },
         getDate(type) {
             const date = new Date();
@@ -149,7 +140,76 @@ export default {
             uni.navigateBack({
                 delta: 1
             });
-        }
+        },
+        // 更新用户信息
+        handleUpdateUser() {
+            this.$fetch({
+                url: this.$store.state.domain + 'post?actionxm=update_userinfo',
+                data: {
+                    user_nickname: this.user_nickname,
+                    user_sex: this.user_sex,
+                    birth: this.birth,
+                    description: this.description == null ? '' : this.description
+                },
+                method: 'post',
+                showLoading: true,
+            }).then(async (res) => {
+                if(res.status == 0) {
+                    console.log(res) 
+                    await this.getUserInfo()
+                } else {
+                    uni.showToast({
+                        title: res.msg,
+                        icon: "none",
+                    });
+                }
+            });
+        },
+        getUserInfo() {
+            new Promise((resolve, reject) => {
+                this.$fetch({
+                    url: this.$store.state.domain + 'get?actionxm=get_userinfo_by_openid',
+                    method: 'get',
+                    showLoading: false,
+                }).then((res) => {
+                    console.log(res)
+                    if(res.status == 0) {
+                        this.$store.commit('userLoginInfo', res['data']['userinfo']);
+                        uni.showToast({
+                            title: '更新成功~',
+                            icon: "none",
+                            success() {
+                                setTimeout(() => {
+                                    uni.navigateBack({
+                                        delta: 1
+                                    });
+                                }, 500);
+                            }
+                        })
+                    } else {
+                        uni.showModal({
+                            title: "温馨提示",
+                            content: "新版本已更新，点击确认升级~",
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    // 获取当前页面信息
+                                    const pages = getCurrentPages();
+                                    const currentPage = pages[pages.length - 1];
+
+                                    // 获取当前页面的路径
+                                    const currentPath = currentPage.route;
+                                    uni.reLaunch({
+                                        url: currentPath
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    return resolve(res)
+                });
+            })
+        },
     },
 };
 </script>
@@ -344,6 +404,10 @@ export default {
     text-align: center;
     line-height: 96rpx;
     margin: 72rpx auto 0;
+}
+
+.dn {
+    opacity: 0;
 }
 
 </style>

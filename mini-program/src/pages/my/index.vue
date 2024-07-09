@@ -86,11 +86,11 @@ export default {
             userLoginInfo: (state) => state.userLoginInfo
         }),
     },
+    onShow() {
+        this.renderUserinfo()
+    },
     onLoad(e) {
         this.calcTopHeight()
-        console.log('this.userLoginInfo=> ', this.userLoginInfo)
-        this.userinfo.avatarUrl = this.userLoginInfo['user_avatarUrl'] == '' ? this.userLoginInfo['wx_avatarUrl'] : this.userLoginInfo['user_avatarUrl']
-        this.userinfo.nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
     },
     onShareAppMessage() {
     },
@@ -114,6 +114,11 @@ export default {
         }
     },
     methods: {
+        renderUserinfo() {
+            console.log('this.userLoginInfo=> ', this.userLoginInfo)
+            this.userinfo.avatarUrl = this.userLoginInfo['user_avatarUrl'] == '' ? this.userLoginInfo['wx_avatarUrl'] : this.userLoginInfo['user_avatarUrl']
+            this.userinfo.nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
+        },
         calcTopHeight() {
             // 状态栏高度
             this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight
