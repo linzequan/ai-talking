@@ -136,6 +136,9 @@ export default {
                 method: "post",
                 filePath: tempFilePaths[0].path,
                 name: "file",
+                header: {
+                    'content-type': 'multipart/form-data'
+                },
                 formData: {
                     type: 'aichat',
                     openid: self.$store.state.openid,
