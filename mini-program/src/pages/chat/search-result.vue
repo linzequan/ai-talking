@@ -230,8 +230,6 @@ export default {
             await this.handleSearchPicTxt(this.searchPicList)
         }
     },
-    onShareAppMessage() {
-    },
     onPageScroll(res) {
         // res.scrollTop 为页面滚动距离
         let top = res.scrollTop

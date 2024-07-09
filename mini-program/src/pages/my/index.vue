@@ -97,8 +97,6 @@ export default {
     onLoad(e) {
         this.calcTopHeight()
     },
-    onShareAppMessage() {
-    },
     onPageScroll(res) {
         // res.scrollTop 为页面滚动距离
         let top = res.scrollTop

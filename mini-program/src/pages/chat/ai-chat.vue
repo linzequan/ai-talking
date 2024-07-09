@@ -89,8 +89,6 @@ export default {
             this.op = 1
         }
     },
-    onShareAppMessage() {
-    },
     methods: {
         calcTopHeight() {
             // 状态栏高度

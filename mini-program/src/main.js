@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store'
+import share from './common/share.js'
 import tuiTabbar from './components/tui-tabbar/tui-tabbar'
 
 const Common = require('./common/')
@@ -31,6 +32,8 @@ for (let k in Common) {
 }
 
 App.mpType = 'app'
+
+Vue.mixin(share)
 
 const app = new Vue({
     store,

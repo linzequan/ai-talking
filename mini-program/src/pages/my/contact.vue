@@ -50,8 +50,6 @@ export default {
     onLoad(e) {
         this.calcTopHeight()
     },
-    onShareAppMessage() {
-    },
     methods: {
         calcTopHeight() {
             // 状态栏高度

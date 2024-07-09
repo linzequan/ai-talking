@@ -109,12 +109,6 @@ export default {
             return this.beginFadeOutScreenPage ? 'open-screen-page animated fadeOut' : 'open-screen-page'
         }
     },
-    onShareAppMessage() {
-        return {
-            title: "对话大师",
-            path: "/pages/chat/simple-chat",
-        };
-    },
     onLoad(e) {
         this.calcTopHeight()
         if (uni.getUserProfile) {

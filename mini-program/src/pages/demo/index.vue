@@ -13,8 +13,6 @@ export default {
   onLoad(e) {
     console.log('11')
   },
-  onShareAppMessage() {
-  },
   methods: {
 
   },
