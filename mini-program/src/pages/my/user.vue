@@ -33,9 +33,11 @@
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">个性描述</div>
-                <textarea class="form-item-textarea" maxlength="-1" placeholder="请输入您个性描述" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #999999;" v-model="description"></textarea>
+                <textarea class="form-item-textarea" maxlength="-1" placeholder="请输入您个性描述" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #999999;" v-model="description" 
+                @keyboardheightchange="handleKeyboardHeightChange"></textarea>
             </div>
             <div class="user-save-btn" @click="handleUpdateUser">保存</div>
+            <view class="keyboard-view" :style="{height: keyboardHeight + 'px'}"></view>
         </div>
     </div>
 </template>
@@ -56,7 +58,8 @@ export default {
             user_nickname: '',
             user_sex: '男',
             description: '',
-            birth: ''
+            birth: '',
+            keyboardHeight: 0
         };
     },
     computed: {
@@ -117,6 +120,28 @@ export default {
         },
         changeSex(val) {
             this.user_sex = val
+        },
+        getElemRectSync(elem) {
+            return new Promise((resolve, reject) => {
+                uni.createSelectorQuery().select(elem).boundingClientRect(data=> {
+                    console.log(data)
+                    if(data) {
+                        resolve(data)
+                    } else {
+                        reject(data)
+                    }
+                }).exec()
+            })
+        },
+        async handleKeyboardHeightChange(e) {
+            console.log(e)
+            this.keyboardHeight = e.height || e.detail.height;
+            setTimeout(() => {
+                uni.pageScrollTo({
+                    scrollTop: this.keyboardHeight,
+                    duration: 300
+                });
+            }, 0);
         },
         getDate(type) {
             const date = new Date();

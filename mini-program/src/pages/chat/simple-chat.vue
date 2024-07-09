@@ -23,7 +23,9 @@
             <div class="chat-content-wrap">
                 <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
                     placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"
-                    v-model="searchTxt"></textarea>
+                    v-model="searchTxt"
+                    @keyboardheightchange="handleKeyboardHeightChange">
+                </textarea>
                 <div v-if="hasLogin">
                     <div class="chat-content-btn" @click="searchSimpleTxt">一键生成回复</div>
                 </div>
@@ -31,6 +33,7 @@
                     <div class="chat-content-btn" @click="showLoginDialog">一键生成回复</div>
                     <!-- <div class="chat-content-btn" @click="getUserInfo('searchSimpleTxt')">一键生成回复</div> -->
                 </div>
+                <view class="keyboard-view" :style="{height: keyboardHeight + 'px'}"></view>
             </div>
             <div class="guess-wrap">
                 <div class="guess-head-wrap">
@@ -83,6 +86,7 @@ export default {
             isShowTabbar: false,
             showOpenScreenPage: true,
             beginFadeOutScreenPage: false,
+            keyboardHeight: 0
         };
     },
     computed: {
@@ -150,8 +154,19 @@ export default {
                 this.isShowTabbar = true;
                 setTimeout(() => {
                     this.showOpenScreenPage = false
-                }, 0)
-            }, 0)
+                }, 1000)
+            }, 2000)
+        },
+        handleKeyboardHeightChange(e) {
+            console.log(e)
+            this.keyboardHeight = e.height || e.detail.height;
+            console.log(this.keyboardHeight);
+            setTimeout(() => {
+                uni.pageScrollTo({
+                    scrollTop: this.keyboardHeight,
+                    duration: 300
+                });
+            }, 0);
         },
         searchSimpleTxt() {
             if (this.searchTxt == '') {

@@ -105,8 +105,11 @@
                 <div class="chat-content-wrap" v-if="resultType == 'txt'">
                     <textarea class="chat-content-textarea" maxlength="-1" placeholder="点击输入或粘贴对方聊天内容～"
                         placeholder-style="font-size: 32rpx; line-height: 1.5; color: #9C9C9C;"
-                        v-model="newSearchTxt"></textarea>
+                        v-model="newSearchTxt"
+                        @keyboardheightchange="handleKeyboardHeightChange">
+                    </textarea>
                     <div class="chat-content-btn" @click="handleAnotherTxtSearch">一键生成回复</div>
+                    <view class="keyboard-view" :style="{height: keyboardHeight + 'px'}"></view>
                 </div>
                 <div class="upload-wrap" v-else>
                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/ai-chat-upload-btn.png"
@@ -185,6 +188,7 @@ export default {
             // }]
             newSearchTxt: '',
             hasSearch: true,
+            keyboardHeight: 0,
         };
     },
     computed: {
@@ -262,6 +266,17 @@ export default {
             this.searchTxt = this.newSearchTxt
             this.newSearchTxt = ''
             this.handleSearchTxt(this.searchTxt)
+        },
+        handleKeyboardHeightChange(e) {
+            console.log(e)
+            this.keyboardHeight = e.height || e.detail.height;
+            console.log(this.keyboardHeight);
+            setTimeout(() => {
+                uni.pageScrollTo({
+                    scrollTop: this.keyboardHeight,
+                    duration: 300
+                });
+            }, 0);
         },
         prevImg(img) {
             wx.previewImage({
