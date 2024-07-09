@@ -219,6 +219,8 @@ export default {
                                 }
                                 await self.$store.dispatch('GETOPENID');
                                 await self.$store.commit("LOGIN", result.userInfo);
+                                // 更新用户信息
+                                await self.getUserInfo()
                                 uni.hideLoading()
                                 uni.showToast({
                                     title: "登录成功~",
@@ -232,38 +234,38 @@ export default {
                 }
             })
         },
-        async getUserInfo(elem) {
-            if (!this.canIUseGetUserProfile) {
-                uni.showModal({
-                    title: '温馨提示',
-                    content: "微信版本过低，请升级后使用~",
-                    showCancel: false
-                })
-            }
-            uni.getUserProfile({
-                desc: '对话大师',
-                success: async (result) => {
-                    console.log('使用新api获取用户信息=> ', result);
-                    if (result.errMsg !== "getUserProfile:ok") {
-                        uni.showModal({
-                            title: "温馨提示",
-                            content: "请同意微信授权，开启高情商对话之旅",
-                            showCancel: false,
-                        });
-                        return;
-                    }
-                    await this.$store.dispatch('GETOPENID');
-                    await this.$store.commit("LOGIN", result.userInfo);
-                    switch (elem) {
-                        case 'searchSimpleTxt':
-                            this.searchSimpleTxt();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            })
-        },
+        // async getUserInfo(elem) {
+        //     if (!this.canIUseGetUserProfile) {
+        //         uni.showModal({
+        //             title: '温馨提示',
+        //             content: "微信版本过低，请升级后使用~",
+        //             showCancel: false
+        //         })
+        //     }
+        //     uni.getUserProfile({
+        //         desc: '对话大师',
+        //         success: async (result) => {
+        //             console.log('使用新api获取用户信息=> ', result);
+        //             if (result.errMsg !== "getUserProfile:ok") {
+        //                 uni.showModal({
+        //                     title: "温馨提示",
+        //                     content: "请同意微信授权，开启高情商对话之旅",
+        //                     showCancel: false,
+        //                 });
+        //                 return;
+        //             }
+        //             await this.$store.dispatch('GETOPENID');
+        //             await this.$store.commit("LOGIN", result.userInfo);
+        //             switch (elem) {
+        //                 case 'searchSimpleTxt':
+        //                     this.searchSimpleTxt();
+        //                     break;
+        //                 default:
+        //                     break;
+        //             }
+        //         }
+        //     })
+        // },
         // 检查登录以及认证状态，显示对应弹窗提示
         async checkStatus() {
             console.log('点击tabbar', this.tabBarIndex)
@@ -287,6 +289,41 @@ export default {
                 return false;
             }
             return true;
+        },
+        // 查询用户信息
+        getUserInfo() {
+            new Promise((resolve, reject) => {
+                this.$fetch({
+                    url: this.$store.state.domain + 'get?actionxm=get_userinfo_by_openid',
+                    method: 'get',
+                    showLoading: false,
+                }).then((res) => {
+                    console.log(res)
+                    if(res.status == 0) {
+                        this.$store.commit('userLoginInfo', res['data']['userinfo']);
+                    } else {
+                        uni.showModal({
+                            title: "温馨提示",
+                            content: "新版本已更新，点击确认升级~",
+                            showCancel: false,
+                            success(res) {
+                                if (res.confirm) {
+                                    // 获取当前页面信息
+                                    const pages = getCurrentPages();
+                                    const currentPage = pages[pages.length - 1];
+
+                                    // 获取当前页面的路径
+                                    const currentPath = currentPage.route;
+                                    uni.reLaunch({
+                                        url: currentPath
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    return resolve(res)
+                });
+            })
         },
     },
 };

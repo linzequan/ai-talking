@@ -82,6 +82,7 @@ export default {
     },
     onLoad(e) {
         this.calcTopHeight()
+        console.log('this.userLoginInfo=> ', this.userLoginInfo)
         this.userinfo.wx_avatarUrl = this.userLoginInfo['wx_avatarUrl']
         this.userinfo.wx_nickname = this.userLoginInfo['wx_nickname']
     },
@@ -116,6 +117,23 @@ export default {
             this.navigationBarHeight = custom.height + (custom.top - this.statusBarHeight) * 2
             this.navHeight = this.statusBarHeight + this.navigationBarHeight
             console.log('顶部高度：' + this.navHeight)
+        },
+        // 查询用户信息
+        getUserInfo() {
+            this.$fetch({
+                url: this.$store.state.domain + 'get?actionxm=get_userinfo_by_openid',
+                showLoading: true
+            }).then(res => {
+                if (res.status == 0) {
+                    console.log(res)
+                } else {
+                    uni.showToast({
+                        title: "获取数据异常~",
+                        icon: "none",
+                    });
+                    return;
+                }
+            })
         },
         gotoUser() {
             uni.navigateTo({

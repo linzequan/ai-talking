@@ -120,7 +120,7 @@ export default {
             const self = this;
             if (!tempFilePaths[0]) {
                 uni.showToast({
-                    title: "请上传图片",
+                    title: "请上传图片~",
                     duration: 2000,
                     icon: "none",
                 });
@@ -193,7 +193,7 @@ export default {
         searchAiResult() {
             if (this.picList.length == 0) {
                 return uni.showToast({
-                    title: "请先上传图片~",
+                    title: "请上传图片~",
                     icon: "none",
                 });
             }
