@@ -11,85 +11,35 @@
         </view>
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
-            <div class="chat-result-wrap">
-                <div class="chat-bubble-right">还有什么办法</div>
+            <div class="chat-result-wrap" v-for="item in chatLogList" :key="item.id">
+                <!-- 渲染右侧搜索词/图片 -->
+                <div class="chat-bubble-right" v-if="item.type == 'txt'">{{ item.txt }}</div>
+                <div class="chat-bubble-right pic" v-else>
+                    <img :src="item.pic" class="chat-bubble-pic" mode="widthFix"
+                        @click="prevImg(item.pic)">
+                </div>
+                <!-- 渲染左侧回复 -->
                 <div class="chat-bubble-response">
                     <div class="chat-bubble-response-text">
-                        甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
+                        {{ item.response }}
                     </div>
                     <div class="chat-bubble-response-break-line"></div>
                     <div class="chat-bubble-op-wrap">
-                        <div class="chat-bubble-op-item left">
+                        <div class="chat-bubble-op-item left" @click="copy(item.response)">
                             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
                                 class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">复制</div>
                         </div>
-                        <div class="chat-bubble-op-item left" @click="showPopup">
+                        <!-- <div class="chat-bubble-op-item left" @click="showPopup">
                             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
                                 class="chat-bubble-op-icon">
                             <div class="chat-bubble-op-text">转发</div>
-                        </div>
-                        <div class="chat-bubble-op-item left">
+                        </div> -->
+                        <div class="chat-bubble-op-item left" @click="collect(item.id, item.is_collect)">
                             <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect-checked.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">已收藏</div>
-                        </div>
-                        <div class="chat-bubble-op-item right">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-result-wrap">
-                <div class="chat-bubble-right">还有什么办法</div>
-                <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">
-                        甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
-                    </div>
-                    <div class="chat-bubble-response-break-line"></div>
-                    <div class="chat-bubble-op-wrap">
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">复制</div>
-                        </div>
-                        <div class="chat-bubble-op-item left" @click="showPopup">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">转发</div>
-                        </div>
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect-checked.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">已收藏</div>
-                        </div>
-                        <div class="chat-bubble-op-item right">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="chat-result-wrap">
-                <div class="chat-bubble-right pic">
-                    <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png" class="chat-bubble-pic" mode="widthFix" @click="prevImg('https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/chat-result-pic.png')">
-                </div>
-                <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">
-                        甲辰龙年，大年三十除夕夜，家家户户的鞭炮声此起彼伏，绚丽的烟花盛开在沈阳的夜色上空，子儿带着儿子李自然，在窗前感受着这浓浓的年味儿。天亮后，居民楼的门口落了一层厚厚的“红地毯”，空气的爆竹味还没散去的，正是北上广深失去的“年味儿”。爆竹腾空，烟花盛开，为团聚的时刻增添了喜庆，但这一地的残局又该如何处理？
-                    </div>
-                    <div class="chat-bubble-response-break-line"></div>
-                    <div class="chat-bubble-op-wrap">
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">复制</div>
-                        </div>
-                        <div class="chat-bubble-op-item left" @click="showPopup">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">转发</div>
-                        </div>
-                        <div class="chat-bubble-op-item left">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect-checked.png"
-                                class="chat-bubble-op-icon">
+                                class="chat-bubble-op-icon" v-if="item.is_collect == 1">
+                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
+                                class="chat-bubble-op-icon" v-else>
                             <div class="chat-bubble-op-text">已收藏</div>
                         </div>
                         <div class="chat-bubble-op-item right">
@@ -135,11 +85,12 @@ export default {
             navigationBarHeight: 0,
             op: 0,
             popupShow: false,
+            chatLogList: []
         };
     },
-    onLoad(e) {
+    async onLoad(e) {
         this.calcTopHeight()
-        this.resultType = e.type || 'txt'
+        this.chatLogList = await this.getChatLogCollectList()
     },
     onShareAppMessage() {
     },
@@ -185,25 +136,77 @@ export default {
         hiddenPopup() {
             this.popupShow = false
         },
-        //隐藏组件
-        closeActionSheet() {
-            this.showActionSheet = false
-        },
-        //调用此方法显示组件
-        openActionSheet(type) {
-            this.showActionSheet = true;
-        },
-        itemClick(e) {
-            console.log(e)
-            let index = e.index;
-            this.closeActionSheet();
-            this.tui.toast(`您点击的按钮索引为：${index}`)
-        },
         goback() {
             uni.navigateBack({
                 delta: 1
             });
-        }
+        },
+        getChatLogCollectList() {
+            return new Promise((resolve, reject) => {
+                this.$fetch({
+                    url: this.$store.state.domain + 'get?actionxm=get_chat_log_collect_list',
+                    data: {},
+                    method: 'post',
+                    showLoading: false,
+                }).then((res) => {
+                    console.log(res)
+                    if(res.status == 0) {
+                        return resolve(res.data)
+                    }
+                    uni.showToast({
+                        title: res.msg,
+                        icon: "none",
+                    });
+                    return reject(res.msg)
+                });
+            })
+        },
+
+        // 复制内容
+        copy(content) {
+            uni.setClipboardData({
+                data: content,
+                success: function () {
+                    return uni.showToast({
+                        title: "复制成功~",
+                        icon: "none",
+                    });
+                }
+            });
+        },
+        // 收藏
+        collect(id, is_collect) {
+            let actionxm = 'save_collet_chat_log';
+            let msg = '收藏成功~';
+            if(is_collect == 1) {
+                actionxm = 'cancel_collet_chat_log';
+                msg = '取消收藏~'
+            }
+            return new Promise((resolve, reject) => {
+                this.$fetch({
+                    url: this.$store.state.domain + 'post?actionxm=' + actionxm,
+                    data: {
+                        chat_log_id: id
+                    },
+                    method: 'post',
+                    showLoading: false,
+                }).then((res) => {
+                    console.log(res)
+                    // 更新this.chatLogList中节点状态
+                    this.chatLogList.map(item => {
+                        if (item.id == id) {
+                            item.is_collect = res.data['is_collect']
+                        }
+                    })
+                    uni.showToast({
+                        title: msg,
+                        icon: "none",
+                    });
+                    console.log('collect chatloglist', this.chatLogList)
+                    return resolve(res.data)
+                });
+            })
+        },
     },
 };
 </script>

@@ -129,7 +129,7 @@ export default {
             self.value2 = tempFilePaths[0].path;
             uni.showLoading({
                 mask: true,
-                title: "加载中",
+                title: "图片上传中..",
             });
             uni.uploadFile({
                 url: self.$store.state.domain + "post?actionxm=upload",
