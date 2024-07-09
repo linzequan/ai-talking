@@ -10,9 +10,9 @@
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="main-wrap">
             <div class="qrcode-wrap">
-                <img src="@/static/wechat-qrcode.png" class="wechat-qrcode" mode="widthFix">
+                <image src="@/static/wechat-qrcode.png" class="wechat-qrcode" mode="widthFix" :show-menu-by-longpress="true"></image>
             </div>
-            <div class="sub-title">扫码添加客服微信</div>
+            <div class="sub-title">长按二维码/扫码添加客服微信</div>
         </div>
     </div>
 </template>

@@ -11,42 +11,45 @@
         </view>
         <div class="empty-wrap" :style="{ 'height': navHeight + 'px' }"></div>
         <div class="wrap">
-            <div class="chat-result-wrap" v-for="item in chatLogList" :key="item.id">
-                <!-- 渲染右侧搜索词/图片 -->
-                <div class="chat-bubble-right" v-if="item.type == 'txt'">{{ item.txt }}</div>
-                <div class="chat-bubble-right pic" v-else>
-                    <img :src="item.pic" class="chat-bubble-pic" mode="widthFix"
-                        @click="prevImg(item.pic)">
-                </div>
-                <!-- 渲染左侧回复 -->
-                <div class="chat-bubble-response">
-                    <div class="chat-bubble-response-text">
-                        {{ item.response }}
+            <tui-no-data imgUrl="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/collect-no-data.png" v-if="chatLogList.length == 0">暂无数据</tui-no-data>
+            <template v-else>
+                <div class="chat-result-wrap" v-for="item in chatLogList" :key="item.id">
+                    <!-- 渲染右侧搜索词/图片 -->
+                    <div class="chat-bubble-right" v-if="item.type == 'txt'">{{ item.txt }}</div>
+                    <div class="chat-bubble-right pic" v-else>
+                        <img :src="item.pic" class="chat-bubble-pic" mode="widthFix"
+                            @click="prevImg(item.pic)">
                     </div>
-                    <div class="chat-bubble-response-break-line"></div>
-                    <div class="chat-bubble-op-wrap">
-                        <div class="chat-bubble-op-item left" @click="copy(item.response)">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">复制</div>
+                    <!-- 渲染左侧回复 -->
+                    <div class="chat-bubble-response">
+                        <div class="chat-bubble-response-text">
+                            {{ item.response }}
                         </div>
-                        <!-- <div class="chat-bubble-op-item left" @click="showPopup">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
-                                class="chat-bubble-op-icon">
-                            <div class="chat-bubble-op-text">转发</div>
-                        </div> -->
-                        <div class="chat-bubble-op-item left" @click="collect(item.id, item.is_collect)">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect-checked.png"
-                                class="chat-bubble-op-icon" v-if="item.is_collect == 1">
-                            <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
-                                class="chat-bubble-op-icon" v-else>
-                            <div class="chat-bubble-op-text">已收藏</div>
-                        </div>
-                        <div class="chat-bubble-op-item right">
+                        <div class="chat-bubble-response-break-line"></div>
+                        <div class="chat-bubble-op-wrap">
+                            <div class="chat-bubble-op-item left" @click="copy(item.response)">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-copy.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">复制</div>
+                            </div>
+                            <!-- <div class="chat-bubble-op-item left" @click="showPopup">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-relay.png"
+                                    class="chat-bubble-op-icon">
+                                <div class="chat-bubble-op-text">转发</div>
+                            </div> -->
+                            <div class="chat-bubble-op-item left" @click="collect(item.id, item.is_collect)">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect-checked.png"
+                                    class="chat-bubble-op-icon" v-if="item.is_collect == 1">
+                                <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-collect.png"
+                                    class="chat-bubble-op-icon" v-else>
+                                <div class="chat-bubble-op-text">已收藏</div>
+                            </div>
+                            <div class="chat-bubble-op-item right">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
         <tui-bottom-popup :zIndex="1002" :maskZIndex="1001" :show="popupShow" @close="hiddenPopup">
             <div class="layer-head-wrap">
@@ -73,10 +76,12 @@
 
 <script>
 import tuiBottomPopup from '../../components/tui-bottom-popup/tui-bottom-popup.vue'
+import tuiNoData from "../../components/tui-no-data/tui-no-data.vue"
 
 export default {
     components: {
-        tuiBottomPopup
+        tuiBottomPopup,
+        tuiNoData
     },
     data() {
         return {
