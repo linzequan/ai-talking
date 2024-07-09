@@ -6,6 +6,7 @@
             <image src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/open-screen-page-logo.png"
                 class="open-screen-page-logo animated jackInTheBox"
                 style="animation-duration: 1s; animation-delay: .5s;"></image>
+            <tui-divider width="60%" :gradual="true" color="#A7A7A7" size="28" backgroundColor="rgba(0, 0, 0, 0)" class="open-screen-page-slogan">对话，创造无限可能</tui-divider>
         </div>
         <!-- 首页内容 -->
         <div class="main-page" v-show="beginFadeOutScreenPage">
@@ -69,8 +70,12 @@
 </template>
 
 <script>
+import tuiDivider from "../../components/tui-divider/tui-divider.vue"
 import { mapState } from "vuex";
 export default {
+    components: {
+        tuiDivider
+    },
     data() {
         return {
             // 自定义头部
@@ -381,6 +386,11 @@ export default {
 .open-screen-page-logo {
     width: 280rpx;
     height: 280rpx;
+}
+
+.open-screen-page-slogan {
+    position: absolute;
+    bottom: 144rpx;
 }
 
 .main-page {
