@@ -28,7 +28,7 @@
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right" mode="widthFix">
                     </div>
                 </div>
-                <div class="menu-item-wrap">
+                <div class="menu-item-wrap" @click="gotoVip">
                     <div class="menu-item-left">
                         <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/my-icon-vip.png" class="menu-icon">
                         <div class="menu-text">会员充值</div>
@@ -160,6 +160,19 @@ export default {
             uni.navigateTo({
                 url: '/pages/my/collect'
             })
+        },
+        gotoVip() {
+            uni.showModal({
+                title: "温馨提示",
+                content: "暂未开放，请联系我们~",
+                success(res) {
+                    if (res.confirm) {
+                        uni.navigateTo({
+                            url: '/pages/my/contact'
+                        })
+                    }
+                }
+            });
         },
         // 更换头像
         onChooseAvatar(e) {

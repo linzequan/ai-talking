@@ -26,14 +26,14 @@
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">出生年月</div>
-                <picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange" class="form-item-picker">
+                <picker mode="date" :start="startDate" :end="endDate" @change="bindDateChange" class="form-item-picker">
                     <input type="text" class="form-item-input" placeholder="请选择您的出生日期" readonly="true" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" v-model="birth">
                     <img src="https://wxpma-stg1.kakaday.com/mnt-public/ai-talking/images/icon-right.png" class="icon-right">
                 </picker>
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">个性描述</div>
-                <textarea class="form-item-textarea" maxlength="-1" placeholder="请输入您个性描述" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #999999;"></textarea>
+                <textarea class="form-item-textarea" maxlength="-1" placeholder="请输入您个性描述" placeholder-style="font-size: 32rpx; line-height: 1.5; color: #999999;" v-model="description"></textarea>
             </div>
             <div class="user-save-btn" @click="handleUpdateUser">保存</div>
         </div>
@@ -101,7 +101,7 @@ export default {
         console.log('this.userLoginInfo=> ', this.userLoginInfo)
         this.user_nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
         this.user_sex = this.userLoginInfo['user_sex'] == '' ? '男' : this.userLoginInfo['user_sex']
-        this.description = !!this.userLoginInfo['description'] ? '' : this.userLoginInfo['description']
+        this.description = !!this.userLoginInfo['description'] ? this.userLoginInfo['description'] : ''
         this.birth = this.userLoginInfo['birth']
     },
     methods: {
@@ -134,7 +134,7 @@ export default {
             return `${year}-${month}-${day}`;
         },
         bindDateChange: function(e) {
-            this.date = e.detail.value
+            this.birth = e.detail.value
         },
         goback() {
             uni.navigateBack({
@@ -369,10 +369,12 @@ export default {
     width: 14rpx;
     height: 24rpx;
     position: absolute;
-    right: 46rpx;
+    /* right: 46rpx; */
+    right: 0;
     top: 50%;
     z-index: 99;
     transform: translateY(-50%);
+    padding: 60rpx 46rpx 60rpx 610rpx;
 }
 
 .form-item-textarea {
