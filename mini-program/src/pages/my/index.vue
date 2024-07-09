@@ -56,6 +56,7 @@
                     </div>
                 </div>
             </div>
+            <tui-footer copyright="Copyright © 2024. 对话大师" fixedBottom="112rpx"></tui-footer>
             <div class="footer-tabbar-wrap">
                 <tui-tabbar></tui-tabbar>
             </div>
@@ -64,8 +65,12 @@
 </template>
 
 <script>
+import tuiFooter from "../../components/tui-footer/tui-footer.vue"
 import { mapState } from "vuex";
 export default {
+    components: {
+        tuiFooter
+    },
     data() {
         return {
             navHeight: 0,
