@@ -65,16 +65,19 @@
                 <!-- <tui-tabbar :canSwitch='canSwitch' @beforeSwitchFn='checkStatus'></tui-tabbar> -->
                 <tui-tabbar :canSwitch='canSwitch' @beforeSwitchFn='showLoginDialog'></tui-tabbar>
             </div>
+            <tui-modal :show="modal" :maskClosable="false" zIndex="99999" shape="circle" :size="32" :button="modalButton" @click="handleClick" @cancel="hideModal" title="对话大师提示您" content="同意微信授权，开启高情商对话之旅"></tui-modal>
         </div>
     </div>
 </template>
 
 <script>
 import tuiDivider from "../../components/tui-divider/tui-divider.vue"
+import tuiModal from "../../components/tui-modal/tui-modal.vue"
 import { mapState } from "vuex";
 export default {
     components: {
-        tuiDivider
+        tuiDivider,
+        tuiModal
     },
     data() {
         return {
@@ -91,7 +94,17 @@ export default {
             isShowTabbar: false,
             showOpenScreenPage: true,
             beginFadeOutScreenPage: false,
-            keyboardHeight: 0
+            keyboardHeight: 0,
+            modalButton: [{
+                text: "取消",
+                type: "gray",
+                plain: true
+            }, {
+                text: "授权",
+                type: "primary",
+                plain: false
+            }],
+            modal: false
         };
     },
     computed: {
@@ -156,6 +169,55 @@ export default {
                 }, 1000)
             }, 2000)
         },
+        //调用此方法显示组件
+        showModal() {
+            this.modal = true;
+        },
+        //隐藏组件
+        hideModal() {
+            this.modal = false;
+        },
+        handleClick(e){
+            const self = this
+            let index = e.index;
+            if (index === 0) {
+                console.log('点击取消')
+            } else {
+                uni.showLoading()
+                // 进行微信登录
+                if (!self.canIUseGetUserProfile) {
+                    uni.showModal({
+                        title: '温馨提示',
+                        content: "微信版本过低，请升级后使用~",
+                        showCancel: false
+                    })
+                }
+                uni.getUserProfile({
+                    desc: '对话大师',
+                    success: async (result) => {
+                        console.log('使用新api获取用户信息=> ', result);
+                        if (result.errMsg !== "getUserProfile:ok") {
+                            uni.showModal({
+                                title: "温馨提示",
+                                content: "请同意微信授权，开启高情商对话之旅",
+                                showCancel: false,
+                            });
+                            return;
+                        }
+                        await self.$store.dispatch('GETOPENID');
+                        await self.$store.commit("LOGIN", result.userInfo);
+                        // 更新用户信息
+                        await self.getUserInfo()
+                        uni.hideLoading()
+                        uni.showToast({
+                            title: "登录成功~",
+                            icon: "none",
+                        });
+                    }
+                })
+            }
+            this.hideModal();
+        },
         handleKeyboardHeightChange(e) {
             console.log(e)
             this.keyboardHeight = e.height || e.detail.height;
@@ -205,6 +267,8 @@ export default {
         },
         // 显示登录弹窗
         showLoginDialog() {
+            this.modal = true;
+            return;
             const self = this
             uni.showModal({
                 content: '请先登录，开启高情商对话之旅~',
