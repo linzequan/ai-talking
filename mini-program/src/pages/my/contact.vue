@@ -94,9 +94,9 @@ export default {
 }
 
 .icon-back {
-    width: 32rpx;
+    width: 48rpx;
     height: 48rpx;
-    margin: 24rpx 36rpx;
+    margin: 18rpx 36rpx;
 }
 
 .title {
