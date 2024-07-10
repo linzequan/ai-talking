@@ -22,7 +22,7 @@
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">昵称</div>
-                <input type="text" class="form-item-input" placeholder="请输入您的昵称" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" v-model="user_nickname">
+                <input type="nickname" class="form-item-input" placeholder="请输入您的昵称" placeholder-style="font-size: 32rpx; line-height: 32rpx; color: #999999;" v-model="user_nickname">
             </div>
             <div class="form-item-wrap">
                 <div class="form-item-label">出生年月</div>
