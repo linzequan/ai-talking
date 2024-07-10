@@ -102,7 +102,8 @@ export default {
     onLoad(e) {
         this.calcTopHeight()
         console.log('this.userLoginInfo=> ', this.userLoginInfo)
-        this.user_nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
+        // this.user_nickname = this.userLoginInfo['user_nickname'] == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
+        this.user_nickname = this.userLoginInfo['user_nickname']
         this.user_sex = this.userLoginInfo['user_sex'] == '' ? '男' : this.userLoginInfo['user_sex']
         this.description = !!this.userLoginInfo['description'] ? this.userLoginInfo['description'] : ''
         this.birth = this.userLoginInfo['birth']
@@ -168,10 +169,11 @@ export default {
         },
         // 更新用户信息
         handleUpdateUser() {
+            const user_nickname = this.user_nickname == '' ? this.userLoginInfo['wx_nickname'] : this.userLoginInfo['user_nickname']
             this.$fetch({
                 url: this.$store.state.domain + 'post?actionxm=update_userinfo',
                 data: {
-                    user_nickname: this.user_nickname,
+                    user_nickname: user_nickname,
                     user_sex: this.user_sex,
                     birth: this.birth,
                     description: this.description == null ? '' : this.description
